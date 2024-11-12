@@ -18,5 +18,5 @@ public class Customer {
     private String email;
     private String userName;
     private String password;
-    private int tickets_added;
+    private int tickets_bought;
 }
