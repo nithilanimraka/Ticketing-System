@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class CustomerService implements Runnable {
+public class CustomerService{
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -75,11 +75,5 @@ public class CustomerService implements Runnable {
             return "Error in buying tickets";
         }
     }
-
-    @Override
-    public void run() {
-
-    }
-
 
 }
