@@ -22,7 +22,7 @@ public class TicketPool {
                         tickets.add(1); // Add a ticket
                         log.info("Added 1 ticket. Total: {}", tickets.size());
                     } else {
-                        log.info("Ticket Capacity Reached");
+                        log.info("Ticket Capacity is insufficient");
                         return;
                     }
                     try {
