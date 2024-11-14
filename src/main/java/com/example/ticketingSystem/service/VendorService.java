@@ -62,4 +62,17 @@ public class VendorService {
         log.info("Vendor with id " + vendorDeleteReqDTO.getId() + " was deleted successfully");
         return "Vendor was deleted successfully";
     }
+
+    public String addTickets(AddTicketReqDTO addTicketReqDTO){
+        int tickets = addTicketReqDTO.getRequest_tickets_add();
+        TicketPool ticketPool = new TicketPool(50);
+        try{
+            ticketPool.addTickets(tickets);
+            return "Tickets added successfully";
+        } catch (Exception e){
+            log.info("Ticket addition was not successful : " + e.getMessage());
+            return "An error occurred : " + e.getMessage();
+        }
+    }
+
 }
