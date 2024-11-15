@@ -11,7 +11,7 @@ function Login() {
     const [errors, setErrors] = useState({});
 
     const handleInput = (event) => {
-        setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
+        setValues(prev => ({...prev, [event.target.name]: event.target.value}))
     }
 
     const navigate = useNavigate();
@@ -24,8 +24,9 @@ function Login() {
             const customerData = { values };
             console.log(customerData);
             try {
-                console.log("no errors");
+                
                 const response = await axios.post('http://localhost:8090/api/customer/login', customerData.values);
+                console.log("no errors");
                 console.log(response);
                 navigate('/home');
             } catch (error) {

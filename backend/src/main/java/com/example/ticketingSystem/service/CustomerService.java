@@ -52,18 +52,22 @@ public class CustomerService{
                 if(isPwdRight){
                     Optional<Customer> customer1 = customerRepository.findOneByUsernameAndPassword(customerLoginReqDTO.getUsername(), encodedPassword);
                     if(customer1.isPresent()){
+                        log.info("Customer logged in successfully");
                         responseLogin.setMessage("Login successful");
                         responseLogin.setStatus(true);
                     }else {
+                        log.error("Customer login failed due to invalid credentials");
                         responseLogin.setMessage("The credentials that have been entered are incorrect");
                         responseLogin.setStatus(false);
                     }
                 }else {
+                    log.error("Customer login failed due to incorrect password");
                     responseLogin.setMessage("Password is incorrect");
                     responseLogin.setStatus(false);
                 }
 
                 }else {
+                log.error("Customer login failed due to invalid username");
                 responseLogin.setMessage("Username does not exist");
                 responseLogin.setStatus(false);
             }
@@ -81,6 +85,7 @@ public class CustomerService{
           return responseLogin;
         } catch (Exception e){
             log.error("Login was unsuccessful : " + e.getMessage(),e);
+            log.error("Login was unsuccessful : " + e.getMessage());
             responseLogin.setMessage("Error occurred while login");
             responseLogin.setStatus(false);
             return responseLogin;
