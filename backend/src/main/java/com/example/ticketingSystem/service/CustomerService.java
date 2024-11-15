@@ -5,6 +5,7 @@ import com.example.ticketingSystem.entity.Customer;
 import com.example.ticketingSystem.repository.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -14,14 +15,17 @@ public class CustomerService{
     @Autowired
     private CustomerRepository customerRepository;
 
-    public CustomerRegisterResponseDTO register(CustomerRegisterReqDTO customerLoginReqDTO){
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public CustomerRegisterResponseDTO register(CustomerRegisterReqDTO customerRegisterReqDTO){
         Customer customer = new Customer();
         CustomerRegisterResponseDTO responseRegister = new CustomerRegisterResponseDTO();
         try{
-            customer.setName(customerLoginReqDTO.getName());
-            customer.setEmail(customerLoginReqDTO.getEmail());
-            customer.setUserName(customerLoginReqDTO.getUsername());
-            customer.setPassword(customerLoginReqDTO.getPassword());
+            customer.setName(customerRegisterReqDTO.getName());
+            customer.setEmail(customerRegisterReqDTO.getEmail());
+            customer.setUsername(customerRegisterReqDTO.getUsername());
+            customer.setPassword(this.passwordEncoder.encode(customerRegisterReqDTO.getPassword()));
             customer.setTickets_bought(0);
             customerRepository.save(customer);
             log.info("Customer saved in database");
@@ -38,8 +42,8 @@ public class CustomerService{
     public CustomerLoginResponseDTO login(CustomerLoginReqDTO customerLoginReqDTO){
         CustomerLoginResponseDTO responseLogin = new CustomerLoginResponseDTO();
         try{
-            Customer customer = customerRepository.findById(customerLoginReqDTO.getId()).orElseThrow(null);
-            String usernameStored = customer.getUserName();
+            Customer customer = customerRepository.findByUserName(customerLoginReqDTO.getUsername());
+            String usernameStored = customer.getUsername();
             String passwordStored = customer.getPassword();
             if(usernameStored.equals(customerLoginReqDTO.getUsername())
                     && passwordStored.equals(customerLoginReqDTO.getPassword())){
@@ -51,7 +55,7 @@ public class CustomerService{
             }
             return responseLogin;
         } catch (Exception e){
-            log.info("Login was unsuccessful : " + e.getMessage());
+            log.error("Login was unsuccessful : " + e.getMessage(),e);
             responseLogin.setMessage("Error occurred while login");
             return responseLogin;
         }

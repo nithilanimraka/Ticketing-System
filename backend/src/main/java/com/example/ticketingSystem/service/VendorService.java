@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.example.ticketingSystem.repository.VendorRepository;
 import com.example.ticketingSystem.entity.Vendor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -14,14 +15,17 @@ public class VendorService {
     @Autowired
     private VendorRepository vendorRepository;
 
-    public VendorRegisterResponseDTO register(VendorRegisterReqDTO vendorLoginReqDTO){
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public VendorRegisterResponseDTO register(VendorRegisterReqDTO vendorRegisterReqDTO){
         Vendor vendor = new Vendor();
         VendorRegisterResponseDTO responseRegister = new VendorRegisterResponseDTO();
         try{
-            vendor.setName(vendorLoginReqDTO.getName());
-            vendor.setEmail(vendorLoginReqDTO.getEmail());
-            vendor.setUserName(vendorLoginReqDTO.getUsername());
-            vendor.setPassword(vendorLoginReqDTO.getPassword());
+            vendor.setName(vendorRegisterReqDTO.getName());
+            vendor.setEmail(vendorRegisterReqDTO.getEmail());
+            vendor.setUsername(vendorRegisterReqDTO.getUsername());
+            vendor.setPassword(this.passwordEncoder.encode(vendorRegisterReqDTO.getPassword()));
             vendor.setTickets_added(0);
             vendorRepository.save(vendor);
             log.info("Vendor saved in database");
@@ -37,8 +41,8 @@ public class VendorService {
     public VendorLoginResponseDTO login(VendorLoginReqDTO vendorLoginReqDTO){
         VendorLoginResponseDTO responseLogin = new VendorLoginResponseDTO();
         try{
-            Vendor vendor = vendorRepository.findById(vendorLoginReqDTO.getId()).orElseThrow(null);
-            String usernameStored = vendor.getUserName();
+            Vendor vendor = vendorRepository.findByUsername(vendorLoginReqDTO.getUsername());
+            String usernameStored = vendor.getUsername();
             String passwordStored = vendor.getPassword();
             if(usernameStored.equals(vendorLoginReqDTO.getUsername())
                     && passwordStored.equals(vendorLoginReqDTO.getPassword())){

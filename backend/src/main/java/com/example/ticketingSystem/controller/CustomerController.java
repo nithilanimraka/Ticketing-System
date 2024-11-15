@@ -34,5 +34,4 @@ public class CustomerController {
     public String deleteUser(@RequestBody CustomerDeleteReqDTO customerDeleteReqDTO){
         return customerService.deleteCustomer(customerDeleteReqDTO);
     }
-
 }

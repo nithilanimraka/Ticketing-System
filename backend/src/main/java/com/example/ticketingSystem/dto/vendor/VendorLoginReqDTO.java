@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VendorLoginReqDTO {
-    private Long id;
+//    private Long id;
     private String username;
     private String password;
 }

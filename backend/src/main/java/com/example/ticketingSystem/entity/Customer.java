@@ -1,9 +1,6 @@
 package com.example.ticketingSystem.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +17,9 @@ public class Customer {
 
     private String name;
     private String email;
-    private String userName;
+    @Column(unique = true)
+    private String username;
+
     private String password;
     private int tickets_bought;
 }
