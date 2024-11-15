@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 public class CustomerService{
@@ -42,21 +44,45 @@ public class CustomerService{
     public CustomerLoginResponseDTO login(CustomerLoginReqDTO customerLoginReqDTO){
         CustomerLoginResponseDTO responseLogin = new CustomerLoginResponseDTO();
         try{
-            Customer customer = customerRepository.findByUserName(customerLoginReqDTO.getUsername());
-            String usernameStored = customer.getUsername();
-            String passwordStored = customer.getPassword();
-            if(usernameStored.equals(customerLoginReqDTO.getUsername())
-                    && passwordStored.equals(customerLoginReqDTO.getPassword())){
-                responseLogin.setMessage("Login successful");
-                log.info("Customer logged in successfully");
-            } else {
-                responseLogin.setMessage("The credentials that have been entered are incorrect");
-                log.info("Customer login failed due to invalid credentials");
+            Customer customer = customerRepository.findByUsername(customerLoginReqDTO.getUsername());
+            if(customer != null){
+                String password = customerLoginReqDTO.getPassword();
+                String encodedPassword = customer.getPassword();
+                boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
+                if(isPwdRight){
+                    Optional<Customer> customer1 = customerRepository.findOneByUsernameAndPassword(customerLoginReqDTO.getUsername(), encodedPassword);
+                    if(customer1.isPresent()){
+                        responseLogin.setMessage("Login successful");
+                        responseLogin.setStatus(true);
+                    }else {
+                        responseLogin.setMessage("The credentials that have been entered are incorrect");
+                        responseLogin.setStatus(false);
+                    }
+                }else {
+                    responseLogin.setMessage("Password is incorrect");
+                    responseLogin.setStatus(false);
+                }
+
+                }else {
+                responseLogin.setMessage("Username does not exist");
+                responseLogin.setStatus(false);
             }
-            return responseLogin;
+
+//            String usernameStored = customer.getUsername();
+//            String passwordStored = customer.getPassword();
+//            if(usernameStored.equals(customerLoginReqDTO.getUsername())
+//                    && passwordStored.equals(customerLoginReqDTO.getPassword())){
+//                responseLogin.setMessage("Login successful");
+//                log.info("Customer logged in successfully");
+//            } else {
+//                responseLogin.setMessage("The credentials that have been entered are incorrect");
+//                log.info("Customer login failed due to invalid credentials");
+//            }
+          return responseLogin;
         } catch (Exception e){
             log.error("Login was unsuccessful : " + e.getMessage(),e);
             responseLogin.setMessage("Error occurred while login");
+            responseLogin.setStatus(false);
             return responseLogin;
         }
     }

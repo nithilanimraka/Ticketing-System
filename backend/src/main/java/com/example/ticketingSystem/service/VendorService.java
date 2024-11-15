@@ -1,12 +1,15 @@
 package com.example.ticketingSystem.service;
 
 import com.example.ticketingSystem.dto.vendor.*;
+import com.example.ticketingSystem.entity.Customer;
 import lombok.extern.slf4j.Slf4j;
 import com.example.ticketingSystem.repository.VendorRepository;
 import com.example.ticketingSystem.entity.Vendor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -41,21 +44,47 @@ public class VendorService {
     public VendorLoginResponseDTO login(VendorLoginReqDTO vendorLoginReqDTO){
         VendorLoginResponseDTO responseLogin = new VendorLoginResponseDTO();
         try{
+
             Vendor vendor = vendorRepository.findByUsername(vendorLoginReqDTO.getUsername());
-            String usernameStored = vendor.getUsername();
-            String passwordStored = vendor.getPassword();
-            if(usernameStored.equals(vendorLoginReqDTO.getUsername())
-                    && passwordStored.equals(vendorLoginReqDTO.getPassword())){
-                responseLogin.setMessage("Login successful");
-                log.info("Vendor logged in successfully");
-            } else {
-                responseLogin.setMessage("The credentials that have entered are incorrect");
-                log.info("Vendor login failed due to invalid credentials");
+            if(vendor != null){
+                String password = vendorLoginReqDTO.getPassword();
+                String encodedPassword = vendor.getPassword();
+                boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
+                if(isPwdRight){
+                    Optional<Vendor> vendor1 = vendorRepository.findOneByUsernameAndPassword(vendorLoginReqDTO.getUsername(), encodedPassword);
+                    if(vendor1.isPresent()){
+                        responseLogin.setMessage("Login successful");
+                        responseLogin.setStatus(true);
+                    }else {
+                        responseLogin.setMessage("The credentials that have been entered are incorrect");
+                        responseLogin.setStatus(false);
+                    }
+                }else {
+                    responseLogin.setMessage("Password is incorrect");
+                    responseLogin.setStatus(false);
+                }
+
+            }else {
+                responseLogin.setMessage("Username does not exist");
+                responseLogin.setStatus(false);
             }
+
+//            Vendor vendor = vendorRepository.findByUsername(vendorLoginReqDTO.getUsername());
+//            String usernameStored = vendor.getUsername();
+//            String passwordStored = vendor.getPassword();
+//            if(usernameStored.equals(vendorLoginReqDTO.getUsername())
+//                    && passwordStored.equals(vendorLoginReqDTO.getPassword())){
+//                responseLogin.setMessage("Login successful");
+//                log.info("Vendor logged in successfully");
+//            } else {
+//                responseLogin.setMessage("The credentials that have entered are incorrect");
+//                log.info("Vendor login failed due to invalid credentials");
+//            }
             return responseLogin;
         } catch (Exception e){
             log.info("Login was unsuccessful : " + e.getMessage());
             responseLogin.setMessage("Error occurred while login");
+            responseLogin.setStatus(false);
             return responseLogin;
         }
     }

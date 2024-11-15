@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class VendorLoginResponseDTO {
     private String message;
+    private Boolean status;
 }
