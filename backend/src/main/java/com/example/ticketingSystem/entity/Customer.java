@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String name;
     private String email;
-    @Column(unique = true)
+//    @Column(unique = true)
     private String username;
 
     private String password;
