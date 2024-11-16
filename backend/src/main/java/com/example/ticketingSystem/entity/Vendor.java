@@ -13,7 +13,7 @@ public class Vendor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long vendor_id;
     private String name;
     private String email;
 //    @Column(unique = true)
@@ -21,4 +21,13 @@ public class Vendor {
 
     private String password;
     private int tickets_added;
+
+    @ManyToOne
+    @JoinColumn(name = "config_id")
+    private Configuration configuration;
+
+//    @ManyToOne
+//    @JoinColumn(name = "fk_config_id")
+//    private Configuration configuration;
+//
 }

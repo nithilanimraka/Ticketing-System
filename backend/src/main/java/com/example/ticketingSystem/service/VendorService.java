@@ -32,7 +32,7 @@ public class VendorService {
             vendor.setTickets_added(0);
             vendorRepository.save(vendor);
             log.info("Vendor saved in database");
-            responseRegister.setMessage("Registration was successful with id : " + vendor.getId());
+            responseRegister.setMessage("Registration was successful with id : " + vendor.getVendor_id());
             return responseRegister;
         } catch (Exception e){
             log.error("Vendor saving unsuccessful : " + e.getMessage());

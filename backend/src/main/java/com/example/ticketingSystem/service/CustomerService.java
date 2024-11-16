@@ -31,8 +31,8 @@ public class CustomerService{
             customer.setTickets_bought(0);
             customerRepository.save(customer);
             log.info("Customer saved in database");
-            responseRegister.setId(customer.getId());
-            responseRegister.setMessage("Registration was successful with id : " + customer.getId());
+            responseRegister.setId(customer.getCustomer_id());
+            responseRegister.setMessage("Registration was successful with id : " + customer.getCustomer_id());
             return responseRegister;
         } catch (Exception e){
             log.error("Customer saving unsuccessful : " + e.getMessage());

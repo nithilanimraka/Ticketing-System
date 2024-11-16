@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddConfigResponseDTO {
-    private Long id;
     private String message;
+    private Boolean status;
 }
