@@ -26,7 +26,7 @@ public class VendorController {
     }
 
     @PostMapping("/add-tickets")
-    public String addTickets(@RequestBody AddTicketReqDTO addTicketReqDTO){
+    public AddTicketResponseDTO addTickets(@RequestBody AddTicketReqDTO addTicketReqDTO){
         return vendorService.addTickets(addTicketReqDTO);
     }
 

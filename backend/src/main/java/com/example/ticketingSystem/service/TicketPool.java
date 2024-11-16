@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Slf4j
 public class TicketPool {
@@ -21,8 +23,8 @@ public class TicketPool {
 
     }
 
-    public void addTickets(int count)throws InterruptedException {
-        executorService.submit(() -> {
+    public Boolean addTickets(int count)throws InterruptedException,ExecutionException {
+        Future<Boolean> future = executorService.submit(() -> {
             synchronized (this) {
                 if (tickets.size() + count <= maxCapacity) {
                     for (int i = 0; i < count; i++) {
@@ -31,46 +33,54 @@ public class TicketPool {
                             log.info("Added 1 ticket. Total: {}", tickets.size());
                         } else {
                             log.info("Ticket Capacity is insufficient");
-                            return;
+                            return false;
                         }
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                             log.error("Thread was interrupted", e);
+                            return false;
                         }
                     }
+                    return true;
                 } else {
                     int remainingTicketSlots = maxCapacity - tickets.size();
                     log.info("Adding {} tickets will exceed maximum ticket count", count);
                     log.info("Remaining ticket slots: {}", remainingTicketSlots);
+                    return false;
                 }
             }
         });
+        return future.get();
     }
 
-    public void removeTickets(int count) throws InterruptedException{
-        executorService.submit(() -> {
-            synchronized (this) {
-                if (tickets.size() >= count) {
-                    for (int i = 0; i < count; i++) {
-                        tickets.remove(0);
-                        log.info("Removed 1 ticket. Total: {}", tickets.size());
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                            log.error("Thread was interrupted", e);
-                        }
+    public Boolean removeTickets(int count) throws InterruptedException, ExecutionException {
+    Future<Boolean> future = executorService.submit(() -> {
+        synchronized (this) {
+            if (tickets.size() >= count) {
+                for (int i = 0; i < count; i++) {
+                    tickets.remove(0);
+                    log.info("Removed 1 ticket. Total: {}", tickets.size());
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        log.error("Thread was interrupted", e);
+                        return false;
                     }
-                } else {
-                    int remainingTickets = tickets.size();
-                    log.info("The number you requested exceeds the number of available tickets");
-                    log.info("Available tickets: " + remainingTickets);
                 }
+                return true;
+            } else {
+                int remainingTickets = tickets.size();
+                log.info("The number you requested exceeds the number of available tickets");
+                log.info("Available tickets: " + remainingTickets);
+                return false;
             }
-        });
-    }
+        }
+    });
+    return future.get();
+}
 
     @PreDestroy
     public void shutdown() {

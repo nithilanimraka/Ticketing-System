@@ -99,17 +99,27 @@ public class CustomerService{
         return "Customer deleted";
     }
 
-    public String buyTickets(BuyTicketReqDTO buyTicketReqDTO){
-        int tickets = buyTicketReqDTO.getRequested_tickets_buy();
+    public BuyTicketResponseDTO buyTickets(BuyTicketReqDTO buyTicketReqDTO){
+        BuyTicketResponseDTO buyTicketResponseDTO = new BuyTicketResponseDTO();
+        int tickets_no = buyTicketReqDTO.getRequested_tickets_buy();
         TicketPool ticketPool = new TicketPool(50);
         try{
-            ticketPool.removeTickets(tickets);
-            log.info("Tickets bought successfully");
-            return "Tickets bought successfully";
+            Boolean buyTicketStatus = ticketPool.removeTickets(tickets_no);
+            if(buyTicketStatus){
+                log.info("Tickets bought successfully");
+                buyTicketResponseDTO.setMessage(tickets_no + " tickets bought successfully");
+                buyTicketResponseDTO.setStatus(true);
+            } else {
+                log.error("Error in buying tickets");
+                buyTicketResponseDTO.setMessage("Error in buying tickets");
+                buyTicketResponseDTO.setStatus(false);
+            }
         } catch (Exception e){
-            log.error("Error in buying tickets : " + e.getMessage());
-            return "Error in buying tickets";
+            log.error("Error in buying tickets : {}", e.getMessage());
+            buyTicketResponseDTO.setMessage("Error in buying tickets");
+            buyTicketResponseDTO.setStatus(false);
         }
+        return buyTicketResponseDTO;
     }
 
 }

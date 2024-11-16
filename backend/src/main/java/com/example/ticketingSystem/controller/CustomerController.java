@@ -26,7 +26,7 @@ public class CustomerController {
     }
 
     @PostMapping("/buy-tickets")
-    public String buyTickets(@RequestBody BuyTicketReqDTO buyTicketReqDTO){
+    public BuyTicketResponseDTO buyTickets(@RequestBody BuyTicketReqDTO buyTicketReqDTO){
         return customerService.buyTickets(buyTicketReqDTO);
     }
 

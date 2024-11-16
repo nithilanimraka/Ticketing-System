@@ -96,16 +96,29 @@ public class VendorService {
         return "Vendor was deleted successfully";
     }
 
-    public String addTickets(AddTicketReqDTO addTicketReqDTO){
-        int tickets = addTicketReqDTO.getRequest_tickets_add();
+    public AddTicketResponseDTO addTickets(AddTicketReqDTO addTicketReqDTO){
+        AddTicketResponseDTO addTicketResponseDTO = new AddTicketResponseDTO();
+        int tickets_no = addTicketReqDTO.getRequest_tickets_add();
         TicketPool ticketPool = new TicketPool(50);
         try{
-            ticketPool.addTickets(tickets);
-            return "Tickets added successfully";
+            Boolean addTicketStatus = ticketPool.addTickets(tickets_no);
+
+            if(addTicketStatus){
+                log.info("{} tickets added successfully", tickets_no);
+                addTicketResponseDTO.setMessage(tickets_no + " tickets added successfully");
+                addTicketResponseDTO.setStatus(true);
+            } else {
+                log.error("Error in adding tickets");
+                addTicketResponseDTO.setMessage("Error in adding tickets");
+                addTicketResponseDTO.setStatus(false);
+            }
+
         } catch (Exception e){
-            log.info("Ticket addition was not successful : " + e.getMessage());
-            return "An error occurred : " + e.getMessage();
+            log.error("Ticket addition was not successful : {}", e.getMessage());
+            addTicketResponseDTO.setMessage("Error in adding tickets");
+            addTicketResponseDTO.setStatus(false);
         }
+        return addTicketResponseDTO;
     }
 
 }
