@@ -16,8 +16,8 @@ public class TicketPool {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long pool_id;
 
-    @ElementCollection
-    private List<Integer> tickets;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ticket> tickets;
 
     private int maxCapacity;
 

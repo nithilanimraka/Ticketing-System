@@ -1,5 +1,6 @@
 package com.example.ticketingSystem.service;
 
+import com.example.ticketingSystem.entity.Ticket;
 import com.example.ticketingSystem.entity.TicketPool;
 import com.example.ticketingSystem.repository.TicketPoolRepository;
 import jakarta.annotation.PreDestroy;
@@ -61,44 +62,36 @@ public class TicketPoolService {
     public Boolean addTickets(int count, TicketPool ticketPool)throws InterruptedException,ExecutionException {
 
 //        TicketPool ticketPool = configService.getTicketPoolByConfigId(configId);
-        List<Integer> tickets = ticketPool.getTickets();
         Future<Boolean> future = executorService.submit(() -> {
             addLock.lock();
-            try{
-
-                    if (tickets.size() + count <= ticketPool.getMaxCapacity()) {
-                        for (int i = 0; i < count; i++) {
-                            if (tickets.size() < 50) {
-                                tickets.add(1); // Add a ticket
-
-                                log.info("Added 1 ticket. Total: {}", tickets.size());
-                            } else {
-                                log.info("Ticket Capacity is insufficient");
-                                return false;
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                                log.error("Thread was interrupted", e);
-                                return false;
-                            }
-                        }
-                        ticketPool.setTickets(tickets);
-                        ticketPoolRepository.save(ticketPool);
-                        return true;
+            try {
+                for (int i = 0; i < count; i++) {
+                    TicketPool latestTicketPool = ticketPoolRepository.findByIdWithTickets(ticketPool.getPool_id());
+                    List<Ticket> tickets = latestTicketPool.getTickets();
+                    if (tickets.size() + 1 <= latestTicketPool.getMaxCapacity()) {
+                        tickets.add(new Ticket(null, "Ticket details")); // Add a new ticket
+                        latestTicketPool.setTickets(tickets);
+                        ticketPoolRepository.save(latestTicketPool);
+                        log.info("Added 1 ticket. Total: {}", tickets.size());
                     } else {
-                        int remainingTicketSlots = ticketPool.getMaxCapacity() - tickets.size();
-                        log.info("Adding {} tickets will exceed maximum ticket count", count);
-                        log.info("Remaining ticket slots: {}", remainingTicketSlots);
+                        log.info("Ticket Capacity is insufficient");
                         return false;
                     }
-
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        log.error("Thread was interrupted", e);
+                        return false;
+                    }
+                }
+                return true;
             } finally {
                 addLock.unlock();
             }
         });
         return future.get();
+    }
 
 
 //        Future<Boolean> future = executorService.submit(() -> {
@@ -130,38 +123,35 @@ public class TicketPoolService {
 //            }
 //        });
 //        return future.get();
-    }
+//    }
 
     public Boolean removeTickets(int count,TicketPool ticketPool) throws InterruptedException, ExecutionException {
 
 //        TicketPool ticketPool = configService.getTicketPoolByConfigId(configId);
-        List<Integer> tickets = ticketPool.getTickets();
         Future<Boolean> future = executorService.submit(() -> {
             removeLock.lock();
-            try{
-
-                    if (tickets.size() >= count) {
-                        for (int i = 0; i < count; i++) {
-                            tickets.remove(0); //Remove a ticket
-                            log.info("Removed 1 ticket. Total: {}", tickets.size());
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                                log.error("Thread was interrupted", e);
-                                return false;
-                            }
-                        }
-                        ticketPool.setTickets(tickets);
-                        ticketPoolRepository.save(ticketPool);
-                        return true;
+            try {
+                for (int i = 0; i < count; i++) {
+                    TicketPool latestTicketPool = ticketPoolRepository.findByIdWithTickets(ticketPool.getPool_id());
+                    List<Ticket> tickets = latestTicketPool.getTickets();
+                    if (!tickets.isEmpty()) {
+                        tickets.remove(0); // Remove a ticket
+                        latestTicketPool.setTickets(tickets);
+                        ticketPoolRepository.save(latestTicketPool);
+                        log.info("Removed 1 ticket. Total: {}", tickets.size());
                     } else {
-                        int remainingTickets = tickets.size();
                         log.info("The number you requested exceeds the number of available tickets");
-                        log.info("Available tickets: " + remainingTickets);
                         return false;
                     }
-
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        log.error("Thread was interrupted", e);
+                        return false;
+                    }
+                }
+                return true;
             } finally {
                 removeLock.unlock();
             }
