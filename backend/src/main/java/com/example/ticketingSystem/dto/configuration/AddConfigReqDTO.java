@@ -17,5 +17,5 @@ public class AddConfigReqDTO {
     private int ticket_release_rate;
     private int customer_retrieval_rate;
     private int max_tickets;
-    private List<Vendor> vendors;
+//    private List<Vendor> vendors;
 }

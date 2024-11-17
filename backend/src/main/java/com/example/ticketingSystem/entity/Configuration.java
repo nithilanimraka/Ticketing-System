@@ -23,16 +23,17 @@ public class Configuration {
     private int ticket_release_rate;
     private int customer_retrieval_rate;
     private int max_tickets;
+    private int currentTicketCount;
 
-    @OneToMany(mappedBy = "configuration", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Vendor> vendors;
-
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "ticket_pool_id", referencedColumnName = "pool_id")
+//    @OneToMany(mappedBy = "configuration", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Vendor> vendors;
+////
+////    @OneToOne(cascade = CascadeType.ALL)
+////    @JoinColumn(name = "ticket_pool_id", referencedColumnName = "pool_id")
+////    private TicketPool ticketPool;
+//
+//    @OneToOne
+//    @JoinColumn(name= "ticket_pool_id", nullable = false)
 //    private TicketPool ticketPool;
-
-    @OneToOne
-    @JoinColumn(name= "ticket_pool_id", nullable = false)
-    private TicketPool ticketPool;
 
 }

@@ -21,7 +21,7 @@ public class TicketPool {
 
     private int maxCapacity;
 
-    @OneToOne(mappedBy = "ticketPool")
-    @JoinColumn(name="config_id", nullable = false)
-    private Configuration configuration;
+//    @OneToOne(mappedBy = "ticketPool")
+//    @JoinColumn(name="config_id", nullable = false)
+//    private Configuration configuration;
 }

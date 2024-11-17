@@ -19,13 +19,13 @@ public class TicketManagementService {
     }
 
     public Boolean addTickets(Long configId, int count) throws InterruptedException, ExecutionException {
-        TicketPool ticketPool = configService.getTicketPoolByConfigId(configId);
-        return ticketPoolService.addTickets(count, ticketPool);
+//        TicketPool ticketPool = configService.getTicketPoolByConfigId(configId);
+        return ticketPoolService.addTickets(count, configId);
     }
 
     public Boolean removeTickets(Long configId, int count) throws InterruptedException, ExecutionException {
-        TicketPool ticketPool = configService.getTicketPoolByConfigId(configId);
-        return ticketPoolService.removeTickets(count, ticketPool);
+//        TicketPool ticketPool = configService.getTicketPoolByConfigId(configId);
+        return ticketPoolService.removeTickets(count, configId);
     }
 
     public TicketPool createTicketPool(int maxCapacity) {

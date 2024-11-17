@@ -1,8 +1,11 @@
 package com.example.ticketingSystem.service;
 
+import com.example.ticketingSystem.entity.Configuration;
 import com.example.ticketingSystem.entity.TicketPool;
+import com.example.ticketingSystem.repository.ConfigurationRepository;
 import com.example.ticketingSystem.repository.TicketPoolRepository;
 import jakarta.annotation.PreDestroy;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,22 +22,18 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TicketPoolService {
 //    @Autowired
 //    private TicketPoolRepository ticketPoolRepository;
 
+    private final ConfigurationRepository configurationRepository;
     private final TicketPoolRepository ticketPoolRepository;
 //    private final ConfigService configService;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final Lock addLock = new ReentrantLock();
     private final Lock removeLock = new ReentrantLock();
 
-
-    @Autowired
-    public TicketPoolService(TicketPoolRepository ticketPoolRepository) {
-        this.ticketPoolRepository = ticketPoolRepository;
-//        this.configService = configService;
-    }
 
     //get ticketpool ID from foreign key of configuration and set add ticket remove ticket to that ticketpool
 //    @Autowired
@@ -58,24 +57,23 @@ public class TicketPoolService {
 //
 //    }
 
-    public Boolean addTickets(int count, TicketPool ticketPool)throws InterruptedException,ExecutionException {
-
+    public Boolean addTickets(int count, Long id)throws InterruptedException,ExecutionException {
+        Configuration configNew = configurationRepository.findById(id).orElseThrow();
+        int maxTickets = configNew.getMax_tickets();
 //        TicketPool ticketPool = configService.getTicketPoolByConfigId(configId);
-        List<Integer> tickets = ticketPool.getTickets();
+
+//        List<Integer> tickets = ticketPool.getTickets();
         Future<Boolean> future = executorService.submit(() -> {
             addLock.lock();
             try{
 
-                    if (tickets.size() + count <= ticketPool.getMaxCapacity()) {
+                    if (configNew.getCurrentTicketCount() + count <= maxTickets) {
                         for (int i = 0; i < count; i++) {
-                            if (tickets.size() < 50) {
-                                tickets.add(1); // Add a ticket
+                            Configuration configuration = configurationRepository.findById(id).orElseThrow();
+                            configuration.setCurrentTicketCount(configuration.getCurrentTicketCount() +1);
+                            Configuration savedConfig = configurationRepository.save(configuration);
+                            log.info("Added 1 ticket. Total: {}", savedConfig.getCurrentTicketCount());
 
-                                log.info("Added 1 ticket. Total: {}", tickets.size());
-                            } else {
-                                log.info("Ticket Capacity is insufficient");
-                                return false;
-                            }
                             try {
                                 Thread.sleep(1000);
                             } catch (InterruptedException e) {
@@ -84,11 +82,9 @@ public class TicketPoolService {
                                 return false;
                             }
                         }
-                        ticketPool.setTickets(tickets);
-                        ticketPoolRepository.save(ticketPool);
                         return true;
                     } else {
-                        int remainingTicketSlots = ticketPool.getMaxCapacity() - tickets.size();
+                        int remainingTicketSlots = configNew.getMax_tickets() - configNew.getCurrentTicketCount();
                         log.info("Adding {} tickets will exceed maximum ticket count", count);
                         log.info("Remaining ticket slots: {}", remainingTicketSlots);
                         return false;
@@ -132,18 +128,22 @@ public class TicketPoolService {
 //        return future.get();
     }
 
-    public Boolean removeTickets(int count,TicketPool ticketPool) throws InterruptedException, ExecutionException {
+    public Boolean removeTickets(int count, Long id) throws InterruptedException, ExecutionException {
 
 //        TicketPool ticketPool = configService.getTicketPoolByConfigId(configId);
-        List<Integer> tickets = ticketPool.getTickets();
+        Configuration configNew = configurationRepository.findById(id).orElseThrow();
+        int ticketCount = configNew.getCurrentTicketCount();
+
         Future<Boolean> future = executorService.submit(() -> {
             removeLock.lock();
             try{
 
-                    if (tickets.size() >= count) {
+                    if (ticketCount >= count) {
                         for (int i = 0; i < count; i++) {
-                            tickets.remove(0); //Remove a ticket
-                            log.info("Removed 1 ticket. Total: {}", tickets.size());
+                            Configuration configuration = configurationRepository.findById(id).orElseThrow();
+                            configuration.setCurrentTicketCount(configuration.getCurrentTicketCount() -1);
+                            Configuration savedConfig = configurationRepository.save(configuration);
+                            log.info("Removed 1 ticket. Total: {}", savedConfig.getCurrentTicketCount());
                             try {
                                 Thread.sleep(1000);
                             } catch (InterruptedException e) {
@@ -152,11 +152,9 @@ public class TicketPoolService {
                                 return false;
                             }
                         }
-                        ticketPool.setTickets(tickets);
-                        ticketPoolRepository.save(ticketPool);
                         return true;
                     } else {
-                        int remainingTickets = tickets.size();
+                        int remainingTickets = configNew.getMax_tickets() - configNew.getCurrentTicketCount();
                         log.info("The number you requested exceeds the number of available tickets");
                         log.info("Available tickets: " + remainingTickets);
                         return false;
