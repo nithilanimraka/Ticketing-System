@@ -16,12 +16,6 @@ public class TicketPool {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long pool_id;
 
-    @ElementCollection
-    private List<Integer> tickets;
-
     private int maxCapacity;
 
-//    @OneToOne(mappedBy = "ticketPool")
-//    @JoinColumn(name="config_id", nullable = false)
-//    private Configuration configuration;
 }

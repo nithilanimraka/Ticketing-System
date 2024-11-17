@@ -9,26 +9,19 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class TicketManagementService {
 
-    private final ConfigService configService;
     private final TicketPoolService ticketPoolService;
 
     @Autowired
-    public TicketManagementService(ConfigService configService, TicketPoolService ticketPoolService) {
-        this.configService = configService;
+    public TicketManagementService( TicketPoolService ticketPoolService) {
         this.ticketPoolService = ticketPoolService;
     }
 
     public Boolean addTickets(Long configId, int count) throws InterruptedException, ExecutionException {
-//        TicketPool ticketPool = configService.getTicketPoolByConfigId(configId);
         return ticketPoolService.addTickets(count, configId);
     }
 
     public Boolean removeTickets(Long configId, int count) throws InterruptedException, ExecutionException {
-//        TicketPool ticketPool = configService.getTicketPoolByConfigId(configId);
         return ticketPoolService.removeTickets(count, configId);
     }
 
-    public TicketPool createTicketPool(int maxCapacity) {
-        return ticketPoolService.createTicketPool(maxCapacity);
-    }
 }
