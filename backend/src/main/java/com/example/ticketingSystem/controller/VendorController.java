@@ -1,6 +1,7 @@
 package com.example.ticketingSystem.controller;
 
 import com.example.ticketingSystem.dto.vendor.*;
+import com.example.ticketingSystem.service.TicketManagementService;
 import com.example.ticketingSystem.service.VendorService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

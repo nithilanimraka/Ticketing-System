@@ -26,4 +26,13 @@ public class Configuration {
 
     @OneToMany(mappedBy = "configuration", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vendor> vendors;
+
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "ticket_pool_id", referencedColumnName = "pool_id")
+//    private TicketPool ticketPool;
+
+    @OneToOne
+    @JoinColumn(name= "ticket_pool_id", nullable = false)
+    private TicketPool ticketPool;
+
 }

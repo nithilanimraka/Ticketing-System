@@ -14,9 +14,13 @@ import com.example.ticketingSystem.service.ConfigService;
 @RestController
 @RequestMapping("/api/config")
 @Slf4j
-@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ConfigController {
-    private ConfigService configService;
+    private final ConfigService configService;
+
+    @Autowired
+    public ConfigController(ConfigService configService) {
+        this.configService = configService;
+    }
 
     @PostMapping("/add")
     public AddConfigResponseDTO addConfigurations(@RequestBody AddConfigReqDTO addConfigReqDTO){

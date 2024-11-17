@@ -20,6 +20,16 @@ public class CustomerService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+//    @Autowired
+//    private TicketPoolService ticketPoolService;
+
+    private final TicketManagementService ticketManagementService;
+
+    @Autowired
+    public CustomerService(TicketManagementService ticketManagementService) {
+        this.ticketManagementService = ticketManagementService;
+    }
+
     public CustomerRegisterResponseDTO register(CustomerRegisterReqDTO customerRegisterReqDTO){
         Customer customer = new Customer();
         CustomerRegisterResponseDTO responseRegister = new CustomerRegisterResponseDTO();
@@ -101,12 +111,13 @@ public class CustomerService{
 
     public BuyTicketResponseDTO buyTickets(BuyTicketReqDTO buyTicketReqDTO){
         BuyTicketResponseDTO buyTicketResponseDTO = new BuyTicketResponseDTO();
-        int tickets_no = buyTicketReqDTO.getRequested_tickets_buy();
-        TicketPool ticketPool = new TicketPool(50);
+        int tickets_no = buyTicketReqDTO.getCount();
+//        Long configId= 1L;
+//        TicketPoolService ticketPoolService = new TicketPoolService(50);
         try{
-            Boolean buyTicketStatus = ticketPool.removeTickets(tickets_no);
+            Boolean buyTicketStatus = ticketManagementService.removeTickets(buyTicketReqDTO.getConfigId(), tickets_no);
             if(buyTicketStatus){
-                log.info("Tickets bought successfully");
+                log.info("{} Tickets bought successfully", tickets_no);
                 buyTicketResponseDTO.setMessage(tickets_no + " tickets bought successfully");
                 buyTicketResponseDTO.setStatus(true);
             } else {

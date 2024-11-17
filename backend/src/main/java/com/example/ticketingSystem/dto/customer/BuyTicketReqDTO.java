@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BuyTicketReqDTO {
-    private int requested_tickets_buy;
+    private int count;
+    private Long configId;
 }

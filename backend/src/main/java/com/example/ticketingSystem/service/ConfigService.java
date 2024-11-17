@@ -3,6 +3,7 @@ package com.example.ticketingSystem.service;
 import com.example.ticketingSystem.dto.configuration.AddConfigReqDTO;
 import com.example.ticketingSystem.dto.configuration.AddConfigResponseDTO;
 import com.example.ticketingSystem.entity.Configuration;
+import com.example.ticketingSystem.entity.TicketPool;
 import com.example.ticketingSystem.entity.Vendor;
 import com.example.ticketingSystem.repository.ConfigurationRepository;
 import com.example.ticketingSystem.repository.VendorRepository;
@@ -17,11 +18,34 @@ import java.util.List;
 @Service
 @Slf4j
 public class ConfigService {
+
     @Autowired
     private ConfigurationRepository configurationRepository;
 
+//    private TicketManagementService ticketManagementService;
     @Autowired
-    private VendorRepository vendorRepository;
+    private TicketPoolService ticketPoolService;
+
+//    @Autowired
+//    public void setTicketManagementService(TicketManagementService ticketManagementService) {
+//        this.ticketManagementService = ticketManagementService;
+//    }
+
+//    @Autowired
+//    public ConfigService(ConfigurationRepository configurationRepository, TicketManagementService ticketManagementService) {
+//        this.configurationRepository = configurationRepository;
+//        this.ticketManagementService = ticketManagementService;
+//        this.ticketPoolService = ticketPoolService;
+//    }
+
+//    @Autowired
+//    private ConfigurationRepository configurationRepository;
+//
+//    @Autowired
+//    private VendorRepository vendorRepository;
+//
+//    @Autowired
+//    private TicketPoolService ticketPoolService;
 
     @Transactional
     public AddConfigResponseDTO addConfigs(AddConfigReqDTO addConfigReqDTO) {
@@ -45,6 +69,10 @@ public class ConfigService {
                 }
             }
             configuration.setVendors(vendors);
+
+            TicketPool ticketPool = ticketPoolService.createTicketPool(addConfigReqDTO.getMax_tickets());
+            configuration.setTicketPool(ticketPool);
+
             configurationRepository.save(configuration);
             log.info("configurations were added to the system");
             responseAddConfig.setMessage("Configurations were successfully added to the system.");
@@ -56,5 +84,11 @@ public class ConfigService {
             responseAddConfig.setStatus(false);
             return responseAddConfig;
         }
+    }
+
+    public TicketPool getTicketPoolByConfigId(Long configId) {
+        Configuration configuration = configurationRepository.findById(configId)
+                .orElseThrow(() -> new RuntimeException("Configuration not found"));
+        return configuration.getTicketPool();
     }
 }

@@ -2,7 +2,6 @@ package com.example.ticketingSystem.service;
 
 import com.example.ticketingSystem.dto.vendor.*;
 import com.example.ticketingSystem.entity.Configuration;
-import com.example.ticketingSystem.entity.Customer;
 import com.example.ticketingSystem.repository.ConfigurationRepository;
 import lombok.extern.slf4j.Slf4j;
 import com.example.ticketingSystem.repository.VendorRepository;
@@ -25,6 +24,16 @@ public class VendorService {
 
     @Autowired
     private ConfigurationRepository configurationRepository;
+
+//    @Autowired
+//    private TicketPoolService ticketPoolService;
+
+    private final TicketManagementService ticketManagementService;
+
+    @Autowired
+    public VendorService(TicketManagementService ticketManagementService) {
+        this.ticketManagementService = ticketManagementService;
+    }
 
     public VendorRegisterResponseDTO register(VendorRegisterReqDTO vendorRegisterReqDTO){
         Vendor vendor = new Vendor();
@@ -108,10 +117,11 @@ public class VendorService {
 
     public AddTicketResponseDTO addTickets(AddTicketReqDTO addTicketReqDTO){
         AddTicketResponseDTO addTicketResponseDTO = new AddTicketResponseDTO();
-        int tickets_no = addTicketReqDTO.getRequest_tickets_add();
-        TicketPool ticketPool = new TicketPool(50);
+        int tickets_no = addTicketReqDTO.getCount();
+//        Long configId = 1L;
+//        TicketPoolService ticketPoolService = new TicketPoolService(50);
         try{
-            Boolean addTicketStatus = ticketPool.addTickets(tickets_no);
+            Boolean addTicketStatus = ticketManagementService.addTickets(addTicketReqDTO.getConfigId(), tickets_no);
 
             if(addTicketStatus){
                 log.info("{} tickets added successfully", tickets_no);
