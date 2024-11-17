@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,11 +37,14 @@ public class ConfigService {
             configuration.setMax_tickets(addConfigReqDTO.getMax_tickets());
 
             List<Vendor> vendors = addConfigReqDTO.getVendors();
-            for (Vendor vendor : vendors) {
-                vendor.setConfiguration(configuration);
+            if (vendors == null) {
+                vendors = new ArrayList<>();
+            } else {
+                for (Vendor vendor : vendors) {
+                    vendor.setConfiguration(configuration);
+                }
             }
             configuration.setVendors(vendors);
-
             configurationRepository.save(configuration);
             log.info("configurations were added to the system");
             responseAddConfig.setMessage("Configurations were successfully added to the system.");

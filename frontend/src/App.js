@@ -2,7 +2,9 @@
 import Login from './pages/login'
 import Signup from './pages/signup'
 import Home from './pages/home'
+import SignupVendor from './pages/signup-vendor';
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
+
 function App() {
   return (
     <BrowserRouter>
@@ -10,6 +12,7 @@ function App() {
         <Route path='/login' element={<Login />}></Route>
         <Route path='/signup' element={<Signup />}></Route>
         <Route path='/' element={<Home />}></Route>
+        <Route path='/signup-vendor' element={<SignupVendor />}></Route>
       </Routes>
     </BrowserRouter>
 

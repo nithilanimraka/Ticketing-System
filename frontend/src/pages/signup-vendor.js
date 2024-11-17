@@ -3,11 +3,12 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
-function Signup() {
+function SignupVendor() {
 
   const [values, setValues] = useState({
     name:'',
     email:'',
+    eventName:'',
     username:'',
     password:''
   })
@@ -21,7 +22,7 @@ function Signup() {
   }
 
   const handleSubmit = async (event)=> {
-
+    
     event.preventDefault();
     const err = Validation(values);
     setErrors(err);
@@ -30,7 +31,7 @@ function Signup() {
       console.log(customerData);
       try {
         console.log("no errors");
-        const response = await axios.post('http://localhost:8090/api/customer/register', customerData.values);
+        const response = await axios.post('http://localhost:8090/api/vendor/register', customerData.values);
         console.log(response);
         navigate('/login');
 
@@ -58,6 +59,10 @@ function Signup() {
       error.email = 'Email is not valid'
     }
 
+    if (values.eventName === '') {
+        error.eventName = 'Event Name should not be empty'
+      }
+
     if (values.username === '') {
       error.username = 'Username should not be empty'
     }
@@ -78,26 +83,28 @@ function Signup() {
             <label htmlFor='name'><strong>Name</strong></label>
             {errors.name && <span className='text-danger'> {errors.name} </span>}
             <input type='text' placeholder='Enter Name' name='name'
-            onChange={handleInput} className='form-control rounded-0' />
-            
-            
+            onChange={handleInput} className='form-control rounded-0' />   
           </div>
 
           <div className='mb-3'>
             <label htmlFor='email'><strong>Email</strong></label>
             {errors.email && <span className='text-danger'> {errors.email} </span>}
             <input type='email' placeholder='Enter Email' name='email'
-            onChange={handleInput} className='form-control rounded-0' />
-            
+            onChange={handleInput} className='form-control rounded-0' />        
+          </div>
+
+          <div className='mb-3'>
+            <label htmlFor='eventName'><strong>Event Name</strong></label>
+            {errors.eventName && <span className='text-danger'> {errors.eventName} </span>}
+            <input type='text' placeholder='Enter Event Name' name='eventName'
+            onChange={handleInput} className='form-control rounded-0' />           
           </div>
 
           <div className='mb-3'>
             <label htmlFor='username'><strong>Username</strong></label>
             {errors.username && <span className='text-danger'> {errors.username} </span>}
             <input type='text' placeholder='Enter Username' name='username'
-            onChange={handleInput} className='form-control rounded-0' />
-            
-            
+            onChange={handleInput} className='form-control rounded-0' />      
           </div>
 
           <div className='mb-3'>
@@ -105,7 +112,6 @@ function Signup() {
             {errors.password && <span className='text-danger'> {errors.password} </span>}
             <input type='password' placeholder='Enter Password' name='password'
             onChange={handleInput} className='form-control rounded-0' />
-            
           </div>
 
           <button type= 'submit' className='btn btn-success w-100 rounded-0'><strong>Create Account</strong></button>
@@ -120,4 +126,4 @@ function Signup() {
   )
 }
 
-export default Signup
+export default SignupVendor;

@@ -1,7 +1,9 @@
 package com.example.ticketingSystem.service;
 
 import com.example.ticketingSystem.dto.vendor.*;
+import com.example.ticketingSystem.entity.Configuration;
 import com.example.ticketingSystem.entity.Customer;
+import com.example.ticketingSystem.repository.ConfigurationRepository;
 import lombok.extern.slf4j.Slf4j;
 import com.example.ticketingSystem.repository.VendorRepository;
 import com.example.ticketingSystem.entity.Vendor;
@@ -21,15 +23,23 @@ public class VendorService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ConfigurationRepository configurationRepository;
+
     public VendorRegisterResponseDTO register(VendorRegisterReqDTO vendorRegisterReqDTO){
         Vendor vendor = new Vendor();
         VendorRegisterResponseDTO responseRegister = new VendorRegisterResponseDTO();
         try{
+            // Fetch the configuration from the database
+            Configuration configuration = configurationRepository.findByEventName(vendorRegisterReqDTO.getEventName())
+                    .orElseThrow(() -> new RuntimeException("Configuration not found"));
             vendor.setName(vendorRegisterReqDTO.getName());
             vendor.setEmail(vendorRegisterReqDTO.getEmail());
             vendor.setUsername(vendorRegisterReqDTO.getUsername());
             vendor.setPassword(this.passwordEncoder.encode(vendorRegisterReqDTO.getPassword()));
             vendor.setTickets_added(0);
+            vendor.setConfiguration(configuration);
+
             vendorRepository.save(vendor);
             log.info("Vendor saved in database");
             responseRegister.setMessage("Registration was successful with id : " + vendor.getVendor_id());

@@ -59,15 +59,17 @@ function Login() {
 
                 <div className='mb-3'>
                     <label htmlFor='username'><strong>Username</strong></label>
+                    {errors.username && <span className='text-danger'> {errors.username} </span>}
                     <input type='text' placeholder='Enter Username' name='username'
                     onChange={handleInput} className='form-control rounded-0' />
-                    {errors.username && <span className='text-danger'> {errors.username} </span>}
+                    
                 </div>
                 <div className='mb-3'>
                     <label htmlFor='password'><strong>Password</strong></label>
+                    {errors.password && <span className='text-danger'> {errors.password} </span>}
                     <input type='password' placeholder='Enter Password' name='password'
                     onChange={handleInput} className='form-control rounded-0'/>
-                    {errors.password && <span className='text-danger'> {errors.password} </span>}
+                    
                 </div>
 
                 <button type='submit' className='btn btn-success w-100 rounded-0'><strong>Log in</strong></button>

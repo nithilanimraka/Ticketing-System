@@ -22,12 +22,7 @@ public class Vendor {
     private String password;
     private int tickets_added;
 
-    @ManyToOne
-    @JoinColumn(name = "config_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "config_id", nullable = false)
     private Configuration configuration;
-
-//    @ManyToOne
-//    @JoinColumn(name = "fk_config_id")
-//    private Configuration configuration;
-//
 }

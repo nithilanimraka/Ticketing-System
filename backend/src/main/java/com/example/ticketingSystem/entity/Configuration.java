@@ -24,10 +24,6 @@ public class Configuration {
     private int customer_retrieval_rate;
     private int max_tickets;
 
-    @OneToMany(mappedBy = "configuration", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "configuration", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vendor> vendors;
-
-//    @OneToMany(targetEntity =Vendor.class,cascade = CascadeType.ALL)
-//    @JoinColumn(name = "fk_config_id", referencedColumnName = "config_id")
-//    private List<Vendor> vendor;
 }
