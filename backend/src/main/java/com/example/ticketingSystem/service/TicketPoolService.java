@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.*;  //For concurrent HashMap
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -24,13 +25,19 @@ public class TicketPoolService {
     @Autowired
     private final ConfigurationRepository configurationRepository;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
-    private final Lock addLock = new ReentrantLock();
-    private final Lock removeLock = new ReentrantLock();
+
+    /**
+     * A map of locks to synchronize access to the ticket pool unique to each configuration
+     */
+    private final ConcurrentHashMap<Long, Lock> lockMap = new ConcurrentHashMap<>();
 
 
     public Boolean addTickets(int count, Long id)throws InterruptedException,ExecutionException {
         Configuration configNew = configurationRepository.findById(id).orElseThrow();
         int maxTickets = configNew.getMax_tickets();
+        Lock addLock = lockMap.computeIfAbsent(id, k -> new ReentrantLock());
+
+
         Future<Boolean> future = executorService.submit(() -> {
             addLock.lock();
             try{
@@ -70,6 +77,7 @@ public class TicketPoolService {
 
         Configuration configNew = configurationRepository.findById(id).orElseThrow();
         int ticketCount = configNew.getCurrentTicketCount();
+        Lock removeLock = lockMap.computeIfAbsent(id, k -> new ReentrantLock());
 
         Future<Boolean> future = executorService.submit(() -> {
             removeLock.lock();
