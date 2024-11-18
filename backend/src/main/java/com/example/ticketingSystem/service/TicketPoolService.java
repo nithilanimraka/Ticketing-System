@@ -47,6 +47,7 @@ public class TicketPoolService {
         Configuration configNew = configurationRepository.findById(id).orElseThrow();
         TicketPool ticketPool = ticketPoolRepository.findByConfiguration(configNew).orElseThrow();
         int maxTickets = configNew.getMax_tickets();
+        int totalTickets = configNew.getNo_of_tickets();
 
         Lock addLock = addLockMap.computeIfAbsent(id, k -> new ReentrantLock());
 
@@ -54,21 +55,28 @@ public class TicketPoolService {
         Future<Boolean> future = executorService.submit(() -> {
             addLock.lock();
             try{
+                if(count > totalTickets){
+                    log.info("The number of tickets you are trying to add exceeds the total number of tickets available: {}", totalTickets);
+                    return false;
+                }
 
-                if (configNew.getCurrentTicketCount() + count <= maxTickets) {
+                else if (configNew.getCurrentTicketCount() + count <= maxTickets) {
                     for (int i = 0; i < count; i++) {
                         Configuration configuration = configurationRepository.findById(id).orElseThrow();
                         configuration.setCurrentTicketCount(configuration.getCurrentTicketCount() +1);
+                        configuration.setNo_of_tickets(configuration.getNo_of_tickets() -1);
                         configurationRepository.save(configuration);
 
                         Ticket ticket = new Ticket();
                         ticket.setTicketPool(ticketPool);
                         ticketRepository.save(ticket);
 
-                        log.info("Added 1 ticket. Total: {}", configuration.getCurrentTicketCount());
+                        log.info("Added 1 ticket to config with id: {}. Total: {}", configuration.getConfig_id(), configuration.getCurrentTicketCount());
+
+                        int waitTime = 1000/configNew.getTicket_release_rate();
 
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(waitTime);
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                             log.error("Thread was interrupted", e);
@@ -112,10 +120,12 @@ public class TicketPoolService {
                         Ticket ticket = ticketRepository.findFirstByTicketPoolOrderByTicketIdAsc(ticketPool).orElseThrow();
                         ticketRepository.delete(ticket);
 
-                        log.info("Removed 1 ticket. Total: {}", configuration.getCurrentTicketCount());
+                        log.info("Removed 1 ticket from config with id: {}. Total: {}",configuration.getConfig_id(), configuration.getCurrentTicketCount());
+
+                        int waitTime = 1000/configNew.getCustomer_retrieval_rate();
 
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(waitTime);
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                             log.error("Thread was interrupted", e);
