@@ -26,4 +26,7 @@ public class Configuration {
     //new entry to store tickets in the event
     private int currentTicketCount;
 
+    @OneToOne(mappedBy = "configuration", cascade = CascadeType.ALL, orphanRemoval = true)
+    private TicketPool ticketPool;
+
 }

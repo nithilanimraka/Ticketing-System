@@ -20,9 +20,6 @@ public class CustomerService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-//    @Autowired
-//    private TicketPoolService ticketPoolService;
-
     private final TicketManagementService ticketManagementService;
 
     @Autowired

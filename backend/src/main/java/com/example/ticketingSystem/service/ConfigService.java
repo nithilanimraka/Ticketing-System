@@ -4,16 +4,13 @@ import com.example.ticketingSystem.dto.configuration.AddConfigReqDTO;
 import com.example.ticketingSystem.dto.configuration.AddConfigResponseDTO;
 import com.example.ticketingSystem.entity.Configuration;
 import com.example.ticketingSystem.entity.TicketPool;
-import com.example.ticketingSystem.entity.Vendor;
 import com.example.ticketingSystem.repository.ConfigurationRepository;
-import com.example.ticketingSystem.repository.VendorRepository;
+import com.example.ticketingSystem.repository.TicketPoolRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -22,8 +19,8 @@ public class ConfigService {
     @Autowired
     private ConfigurationRepository configurationRepository;
 
-//    @Autowired
-//    private TicketPoolService ticketPoolService;
+    @Autowired
+    private TicketPoolRepository ticketPoolRepository;
 
     public AddConfigResponseDTO addConfigs(AddConfigReqDTO addConfigReqDTO) {
         Configuration configuration = new Configuration();
@@ -38,7 +35,12 @@ public class ConfigService {
             configuration.setCurrentTicketCount(0);
             configurationRepository.save(configuration);
 
-            responseAddConfig.setMessage("Configurations were successfully added to the system.");
+            TicketPool ticketPool = new TicketPool();
+            ticketPool.setConfiguration(configuration);
+            ticketPool.setMaxCapacity(addConfigReqDTO.getMax_tickets());
+            ticketPoolRepository.save(ticketPool);
+
+            responseAddConfig.setMessage("Configurations and TicketPool were successfully added to the system.");
             responseAddConfig.setStatus(true);
             return responseAddConfig;
 

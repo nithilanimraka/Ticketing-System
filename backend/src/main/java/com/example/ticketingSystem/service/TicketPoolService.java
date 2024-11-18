@@ -1,7 +1,11 @@
 package com.example.ticketingSystem.service;
 
 import com.example.ticketingSystem.entity.Configuration;
+import com.example.ticketingSystem.entity.Ticket;
+import com.example.ticketingSystem.entity.TicketPool;
 import com.example.ticketingSystem.repository.ConfigurationRepository;
+import com.example.ticketingSystem.repository.TicketPoolRepository;
+import com.example.ticketingSystem.repository.TicketRepository;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +20,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.*;  //For concurrent HashMap
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Slf4j
 @Service
@@ -24,18 +29,26 @@ public class TicketPoolService {
 
     @Autowired
     private final ConfigurationRepository configurationRepository;
+    @Autowired
+    private final TicketPoolRepository ticketPoolRepository;
+    @Autowired
+    private final TicketRepository ticketRepository;
+
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     /**
      * A map of locks to synchronize access to the ticket pool unique to each configuration
      */
-    private final ConcurrentHashMap<Long, Lock> lockMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Long, Lock> addLockMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Long, Lock> removeLockMap = new ConcurrentHashMap<>();
 
 
     public Boolean addTickets(int count, Long id)throws InterruptedException,ExecutionException {
         Configuration configNew = configurationRepository.findById(id).orElseThrow();
+        TicketPool ticketPool = ticketPoolRepository.findByConfiguration(configNew).orElseThrow();
         int maxTickets = configNew.getMax_tickets();
-        Lock addLock = lockMap.computeIfAbsent(id, k -> new ReentrantLock());
+
+        Lock addLock = addLockMap.computeIfAbsent(id, k -> new ReentrantLock());
 
 
         Future<Boolean> future = executorService.submit(() -> {
@@ -46,8 +59,13 @@ public class TicketPoolService {
                     for (int i = 0; i < count; i++) {
                         Configuration configuration = configurationRepository.findById(id).orElseThrow();
                         configuration.setCurrentTicketCount(configuration.getCurrentTicketCount() +1);
-                        Configuration savedConfig = configurationRepository.save(configuration);
-                        log.info("Added 1 ticket. Total: {}", savedConfig.getCurrentTicketCount());
+                        configurationRepository.save(configuration);
+
+                        Ticket ticket = new Ticket();
+                        ticket.setTicketPool(ticketPool);
+                        ticketRepository.save(ticket);
+
+                        log.info("Added 1 ticket. Total: {}", configuration.getCurrentTicketCount());
 
                         try {
                             Thread.sleep(1000);
@@ -76,8 +94,10 @@ public class TicketPoolService {
     public Boolean removeTickets(int count, Long id) throws InterruptedException, ExecutionException {
 
         Configuration configNew = configurationRepository.findById(id).orElseThrow();
+        TicketPool ticketPool = ticketPoolRepository.findByConfiguration(configNew).orElseThrow();
         int ticketCount = configNew.getCurrentTicketCount();
-        Lock removeLock = lockMap.computeIfAbsent(id, k -> new ReentrantLock());
+
+        Lock removeLock = removeLockMap.computeIfAbsent(id, k -> new ReentrantLock());
 
         Future<Boolean> future = executorService.submit(() -> {
             removeLock.lock();
@@ -87,8 +107,13 @@ public class TicketPoolService {
                     for (int i = 0; i < count; i++) {
                         Configuration configuration = configurationRepository.findById(id).orElseThrow();
                         configuration.setCurrentTicketCount(configuration.getCurrentTicketCount() -1);
-                        Configuration savedConfig = configurationRepository.save(configuration);
-                        log.info("Removed 1 ticket. Total: {}", savedConfig.getCurrentTicketCount());
+                        configurationRepository.save(configuration);
+
+                        Ticket ticket = ticketRepository.findFirstByTicketPoolOrderByTicketIdAsc(ticketPool).orElseThrow();
+                        ticketRepository.delete(ticket);
+
+                        log.info("Removed 1 ticket. Total: {}", configuration.getCurrentTicketCount());
+
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {

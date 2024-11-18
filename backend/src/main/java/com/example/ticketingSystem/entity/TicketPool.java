@@ -18,4 +18,10 @@ public class TicketPool {
 
     private int maxCapacity;
 
+    @OneToOne
+    @JoinColumn(name="config_id", nullable = false)
+    private Configuration configuration;
+
+    @OneToMany(mappedBy = "ticketPool", cascade = CascadeType.ALL,  orphanRemoval = true)
+    private List<Ticket> tickets;
 }
