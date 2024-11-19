@@ -15,13 +15,20 @@ public class Main {
             System.out.println("1. Add a new configuration");
             System.out.println("2. Buy tickets");
             System.out.println("3. Add tickets");
-            System.out.println("4. Exit");
+            System.out.println("0. Exit");
             System.out.println("-------------------------------------------------");
 
-            System.out.println("Please choose an option(1,2,3 or 4):");
-
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice;
+            while(true){
+                System.out.println("Please choose an option(1,2,3 or 0):");
+                if(scanner.hasNextInt()){
+                    choice = scanner.nextInt();
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter a number.");
+                    scanner.next();
+                }
+            }
 
             switch (choice) {
                 case 1:
@@ -36,12 +43,12 @@ public class Main {
                     Vendor vendor = new Vendor();
                     vendor.addTickets();
                     break;
-                case 4:
+                case 0:
                     condition = false;
                     break;
 
                 default:
-                    System.out.println("Invalid choice. Please select 1, 2, or 3.");
+                    System.out.println("Invalid choice. Please select 1, 2, 3 or 0.");
                     break;
             }
         }
