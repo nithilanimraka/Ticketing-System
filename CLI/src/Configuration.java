@@ -16,9 +16,9 @@ public class Configuration {
 
     RestTemplate restTemplate = new RestTemplate();
 
-    String apiUrl = "http://localhost:8090/api/config/add";
-
     public void addConfiguration() {
+
+        String apiUrl = "http://localhost:8090/api/config/add";
 
         Scanner scanner = new Scanner(System.in);
 
@@ -28,17 +28,70 @@ public class Configuration {
         System.out.println("Enter the location: ");
         String location = scanner.nextLine();
 
-        System.out.println("Enter the total number of tickets: ");
-        int no_of_tickets = scanner.nextInt();
 
-        System.out.println("Enter the ticket release rate: ");
-        int ticket_release_rate = scanner.nextInt();
+        int no_of_tickets;
+        while (true){
+            System.out.println("Enter the total number of tickets: ");
+            if(scanner.hasNextInt()){
+                no_of_tickets = scanner.nextInt();
+                if(no_of_tickets > 0){
+                    break;
+                } else {
+                    System.out.println("Please enter a positive number.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
+        }
 
-        System.out.println("Enter the customer retrieval rate: ");
-        int customer_retrieval_rate = scanner.nextInt();
+        int ticket_release_rate;
+        while (true) {
+            System.out.println("Enter the ticket release rate: ");
+            if (scanner.hasNextInt()) {
+                ticket_release_rate = scanner.nextInt();
+                if (ticket_release_rate > 0) {
+                    break;
+                } else {
+                    System.out.println("Please enter a positive number.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
+        }
 
-        System.out.println("Enter the maximum number of tickets in ticket pool: ");
-        int max_tickets = scanner.nextInt();
+        int customer_retrieval_rate;
+        while(true){
+            System.out.println("Enter the customer retrieval rate: ");
+            if(scanner.hasNextInt()){
+                customer_retrieval_rate = scanner.nextInt();
+                if(customer_retrieval_rate > 0){
+                    break;
+                } else {
+                    System.out.println("Please enter a positive number.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
+        }
+
+        int max_tickets;
+        while(true){
+            System.out.println("Enter the maximum number of tickets in ticket pool: ");
+            if(scanner.hasNextInt()){
+                max_tickets = scanner.nextInt();
+                if(max_tickets > 0){
+                    break;
+                } else {
+                    System.out.println("Please enter a positive number.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
+        }
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("eventName", eventName);

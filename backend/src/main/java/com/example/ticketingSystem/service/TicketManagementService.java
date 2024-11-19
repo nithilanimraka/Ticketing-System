@@ -16,12 +16,12 @@ public class TicketManagementService {
         this.ticketPoolService = ticketPoolService;
     }
 
-    public Boolean addTickets(Long configId, int count) throws InterruptedException, ExecutionException {
-        return ticketPoolService.addTickets(count, configId);
+    public Boolean addTickets(String eventName, int count) throws InterruptedException, ExecutionException {
+        return ticketPoolService.addTickets(count, eventName);
     }
 
-    public Boolean removeTickets(Long configId, int count) throws InterruptedException, ExecutionException {
-        return ticketPoolService.removeTickets(count, configId);
+    public Boolean removeTickets(String eventName, int count) throws InterruptedException, ExecutionException {
+        return ticketPoolService.removeTickets(count, eventName);
     }
 
 }

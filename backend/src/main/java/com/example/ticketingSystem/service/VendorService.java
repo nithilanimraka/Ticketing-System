@@ -117,7 +117,7 @@ public class VendorService {
 //        Long configId = 1L;
 //        TicketPoolService ticketPoolService = new TicketPoolService(50);
         try{
-            Boolean addTicketStatus = ticketManagementService.addTickets(addTicketReqDTO.getConfigId(), tickets_no);
+            Boolean addTicketStatus = ticketManagementService.addTickets(addTicketReqDTO.getEventName(), tickets_no);
 
             if(addTicketStatus){
                 log.info("{} tickets added successfully", tickets_no);

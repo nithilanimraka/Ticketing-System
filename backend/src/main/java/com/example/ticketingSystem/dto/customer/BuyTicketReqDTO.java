@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BuyTicketReqDTO {
     private int count;
-    private Long configId;
+//    private Long configId;
+    private String eventName;
 }
