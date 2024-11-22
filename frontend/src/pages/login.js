@@ -28,7 +28,7 @@ function Login() {
                 const response = await axios.post('http://localhost:8090/api/customer/login', customerData.values);
                 console.log("no errors");
                 console.log(response);
-                navigate('/home');
+                navigate('/');
             } catch (error) {
                 console.error("Error registering customer:", error);
             }
