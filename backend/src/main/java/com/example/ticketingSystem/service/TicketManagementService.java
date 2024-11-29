@@ -20,8 +20,8 @@ public class TicketManagementService {
         return ticketPoolService.addTickets(count, eventName);
     }
 
-    public Boolean removeTickets(String eventName, int count) throws InterruptedException, ExecutionException {
-        return ticketPoolService.removeTickets(count, eventName);
+    public Boolean removeTickets(Long configId, int count) throws InterruptedException, ExecutionException {
+        return ticketPoolService.removeTickets(count, configId);
     }
 
 }

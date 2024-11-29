@@ -12,5 +12,5 @@ public class GetConfigDTO {
     private Long config_id;
     private String eventName;
     private String location;
-    private int no_of_tickets;
+    private int currentTicketCount;
 }

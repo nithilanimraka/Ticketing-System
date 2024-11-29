@@ -21,7 +21,7 @@ const EventCard = ({ event }) => {
         <div className="card-body">
           <h5 className="card-title">{event.eventName}</h5>
           <h6 className="card-subtitle mb-2 text-muted">{event.location}</h6>
-          <p className="card-text">Tickets Available: {event.no_of_tickets}</p>
+          <p className="card-text">Tickets Available: {event.currentTicketCount}</p>
           <button onClick={handleViewMore} className="btn btn-primary">View More</button>
         </div>
       </div>

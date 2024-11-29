@@ -64,7 +64,7 @@ public class ConfigService {
             getConfigDTO.setConfig_id(configuration.getConfig_id());
             getConfigDTO.setEventName(configuration.getEventName());
             getConfigDTO.setLocation(configuration.getLocation());
-            getConfigDTO.setNo_of_tickets(configuration.getNo_of_tickets());
+            getConfigDTO.setCurrentTicketCount(configuration.getCurrentTicketCount());
             getConfigDTOList.add(getConfigDTO);
         }
 
@@ -80,7 +80,7 @@ public class ConfigService {
         getConfigDTO.setConfig_id(configuration.getConfig_id());
         getConfigDTO.setEventName(configuration.getEventName());
         getConfigDTO.setLocation(configuration.getLocation());
-        getConfigDTO.setNo_of_tickets(configuration.getNo_of_tickets());
+        getConfigDTO.setCurrentTicketCount(configuration.getCurrentTicketCount());
 
         return getConfigDTO;
     }

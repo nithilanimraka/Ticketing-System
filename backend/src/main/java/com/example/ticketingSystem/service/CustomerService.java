@@ -112,7 +112,7 @@ public class CustomerService{
 //        Long configId= 1L;
 //        TicketPoolService ticketPoolService = new TicketPoolService(50);
         try{
-            Boolean buyTicketStatus = ticketManagementService.removeTickets(buyTicketReqDTO.getEventName(), tickets_no);
+            Boolean buyTicketStatus = ticketManagementService.removeTickets(buyTicketReqDTO.getConfigId(), tickets_no);
             if(buyTicketStatus){
                 log.info("{} Tickets bought successfully", tickets_no);
                 buyTicketResponseDTO.setMessage(tickets_no + " tickets bought successfully");
