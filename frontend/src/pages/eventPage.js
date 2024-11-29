@@ -19,8 +19,9 @@ const EventPage = () => {
   return (
     <div className="container">
       <h1>{event.eventName}</h1>
-      <p>Details for event ID: {config_id}</p>
-      {/* Add more event details here */}
+      <p>Location: {event.location}</p>
+      <p>Tickets Available: {event.no_of_tickets}</p>
+      <button className="btn btn-primary"> Buy Ticket</button>
     </div>
   );
 };

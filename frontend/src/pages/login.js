@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useUser } from '../components/UserContext';
 import axios from 'axios';
 
 function Login() {
@@ -7,6 +8,8 @@ function Login() {
         username:'',
         password:''
     })
+
+    const { login } = useUser();
 
     const [errors, setErrors] = useState({});
 
@@ -28,6 +31,8 @@ function Login() {
                 const response = await axios.post('http://localhost:8090/api/customer/login', customerData.values);
                 console.log("no errors");
                 console.log(response);
+                const userData = values.username; // Replace with actual user data
+                login(userData);
                 navigate('/');
             } catch (error) {
                 console.error("Error registering customer:", error);
