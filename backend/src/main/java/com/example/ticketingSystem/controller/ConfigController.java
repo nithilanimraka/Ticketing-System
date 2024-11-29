@@ -33,4 +33,9 @@ public class ConfigController {
     public List<GetConfigDTO> getAllConfigurations() {
         return configService.getAllConfigs();
     }
+
+    @GetMapping("/{id}")
+    public GetConfigDTO getConfigById(@PathVariable Long id) {
+        return configService.getConfigById(id);
+    }
 }

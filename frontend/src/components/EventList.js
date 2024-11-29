@@ -6,7 +6,7 @@ const EventList = ({ events }) => {
     <div className="container">
       <div className="row">
         {events.map((event) => (
-          <EventCard key={event.eventName} event={event}/>
+          <EventCard key={event.config_id} event={event}/>
         ))}
       </div>
     </div>

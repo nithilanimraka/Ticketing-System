@@ -1,5 +1,7 @@
 import React from 'react';
-const EventCard = ({ event, onBuyTicket }) => {
+import { Link } from 'react-router-dom';
+
+const EventCard = ({ event }) => {
   return (
     <div className="col-md-4 mb-4">
       <div className="card">
@@ -7,7 +9,7 @@ const EventCard = ({ event, onBuyTicket }) => {
           <h5 className="card-title">{event.eventName}</h5>
           <h6 className="card-subtitle mb-2 text-muted">{event.location}</h6>
           <p className="card-text">Tickets Available: {event.no_of_tickets}</p>
-          <button className="btn btn-primary" onClick={() => onBuyTicket(event.id)}>Buy Ticket</button>
+          <Link to={`/event/${event.config_id}`} className="btn btn-primary">View More</Link>
         </div>
       </div>
     </div>

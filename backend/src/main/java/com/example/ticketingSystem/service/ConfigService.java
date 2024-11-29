@@ -61,6 +61,7 @@ public class ConfigService {
         List<GetConfigDTO> getConfigDTOList = new ArrayList<>();
         for(Configuration configuration : configurations){
             GetConfigDTO getConfigDTO = new GetConfigDTO();
+            getConfigDTO.setConfig_id(configuration.getConfig_id());
             getConfigDTO.setEventName(configuration.getEventName());
             getConfigDTO.setLocation(configuration.getLocation());
             getConfigDTO.setNo_of_tickets(configuration.getNo_of_tickets());
@@ -69,6 +70,19 @@ public class ConfigService {
 
         return getConfigDTOList;
 
+    }
+
+    public GetConfigDTO getConfigById(Long id) {
+        log.info("Get config by ID is running now + {}",id);
+        Configuration configuration = configurationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Configuration not found with id: " + id));
+        GetConfigDTO getConfigDTO = new GetConfigDTO();
+        getConfigDTO.setConfig_id(configuration.getConfig_id());
+        getConfigDTO.setEventName(configuration.getEventName());
+        getConfigDTO.setLocation(configuration.getLocation());
+        getConfigDTO.setNo_of_tickets(configuration.getNo_of_tickets());
+
+        return getConfigDTO;
     }
 
 }

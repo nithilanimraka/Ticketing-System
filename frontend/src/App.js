@@ -16,7 +16,7 @@ function App() {
         <Route path='/' element={<Home />}></Route>
         <Route path='/signup-vendor' element={<SignupVendor />}></Route>
         <Route path='/login-vendor' element={<LoginVendor />}></Route>
-        <Route path='/eventPage' element={<EventPage />}></Route>
+        <Route path='/event/:config_id' element={<EventPage />}></Route>
       </Routes>
     </BrowserRouter>
 
