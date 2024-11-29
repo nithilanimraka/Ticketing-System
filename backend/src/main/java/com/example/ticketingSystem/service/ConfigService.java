@@ -2,14 +2,17 @@ package com.example.ticketingSystem.service;
 
 import com.example.ticketingSystem.dto.configuration.AddConfigReqDTO;
 import com.example.ticketingSystem.dto.configuration.AddConfigResponseDTO;
+import com.example.ticketingSystem.dto.configuration.GetConfigDTO;
 import com.example.ticketingSystem.entity.Configuration;
 import com.example.ticketingSystem.entity.TicketPool;
 import com.example.ticketingSystem.repository.ConfigurationRepository;
 import com.example.ticketingSystem.repository.TicketPoolRepository;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -50,6 +53,22 @@ public class ConfigService {
             responseAddConfig.setStatus(false);
             return responseAddConfig;
         }
+    }
+
+    public List<GetConfigDTO> getAllConfigs() {
+
+        List<Configuration> configurations = configurationRepository.findAll();
+        List<GetConfigDTO> getConfigDTOList = new ArrayList<>();
+        for(Configuration configuration : configurations){
+            GetConfigDTO getConfigDTO = new GetConfigDTO();
+            getConfigDTO.setEventName(configuration.getEventName());
+            getConfigDTO.setLocation(configuration.getLocation());
+            getConfigDTO.setNo_of_tickets(configuration.getNo_of_tickets());
+            getConfigDTOList.add(getConfigDTO);
+        }
+
+        return getConfigDTOList;
+
     }
 
 }

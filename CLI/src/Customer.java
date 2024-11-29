@@ -10,17 +10,16 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Customer {
+public class Customer{
 
     Logger logger = Logger.getLogger(Customer.class.getName());
 
+    Scanner scanner = new Scanner(System.in);
     RestTemplate restTemplate = new RestTemplate();
 
     public void buyTickets() {
 
         String apiUrl = "http://localhost:8090/api/customer/buy-tickets";
-
-        Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter the event name: ");
         String eventName = scanner.nextLine();

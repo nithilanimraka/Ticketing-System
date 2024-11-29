@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
-function Login() {
+function LoginVendor() {
     const [values, setValues] = useState({
         username:'',
         password:''
@@ -54,7 +54,7 @@ function Login() {
     <div className='d-flex justify-content-center align-items-center bg-primary vh-100'>
 
         <div className='bg-white p-3 rounded w-2'>
-            <h2>Customer Log In</h2>
+            <h2>Vendor Log In</h2>
             <form action='' onSubmit={handleSubmit}>
 
                 <div className='mb-3'>
@@ -74,7 +74,7 @@ function Login() {
 
                 <button type='submit' className='btn btn-success w-100 rounded-0'><strong>Log in</strong></button>
 
-                <Link to='/signup' className='btn btn-default border w-100 bg-light rounded-0 text-decoration-none my-2'>Create Account</Link>
+                <Link to='/signup-vendor' className='btn btn-default border w-100 bg-light rounded-0 text-decoration-none my-2'>Create Account</Link>
 
             </form>
         </div>
@@ -82,4 +82,4 @@ function Login() {
   )
 }
 
-export default Login;
+export default LoginVendor;

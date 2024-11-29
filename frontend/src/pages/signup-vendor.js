@@ -77,7 +77,7 @@ function SignupVendor() {
   return (
     <div className='d-flex justify-content-center align-items-center bg-primary vh-100'>
       <div className='bg-white p-3 rounded w-2'>
-        <h2>Sign Up</h2>
+        <h2>Vendor Sign Up</h2>
         <form action='' onSubmit={handleSubmit}>
           <div className='mb-3'>
             <label htmlFor='name'><strong>Name</strong></label>
@@ -119,7 +119,7 @@ function SignupVendor() {
             Do you agree to our terms and conditions?
             <input type='checkbox'></input>
           </p>
-          <Link to='/login' className='btn btn-default border w-100 bg-light rounded-0 text-decoration-none'>Login</Link>
+          <Link to='/login-vendor' className='btn btn-default border w-100 bg-light rounded-0 text-decoration-none'>Login</Link>
         </form>
       </div>
     </div>
