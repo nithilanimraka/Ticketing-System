@@ -1,7 +1,10 @@
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class Main {
     public static void main(String[] args) {
+
+        Logger logger = Logger.getLogger(Main.class.getName());
 
         boolean condition = true;
 
@@ -50,7 +53,6 @@ public class Main {
             }
         }
 
-
-
     }
+    
 }

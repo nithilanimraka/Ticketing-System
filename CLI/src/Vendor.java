@@ -10,7 +10,20 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Vendor{
+public class Vendor implements Runnable{
+
+    private Long eventId;
+    private int count;
+    private String apiUrl;
+
+    public Vendor() {
+    }
+
+    public Vendor(Long eventId, int count, String apiUrl) {
+        this.eventId = eventId;
+        this.count = count;
+        this.apiUrl = apiUrl;
+    }
 
     Logger logger = Logger.getLogger(Vendor.class.getName());
 
@@ -18,41 +31,20 @@ public class Vendor{
 
     RestTemplate restTemplate = new RestTemplate();
 
-    public void addTickets(){
-
-        String apiUrl = "http://localhost:8090/api/vendor/add-tickets";
-
-        System.out.println("Enter the event name: ");
-        String eventName = scanner.nextLine();
-
-        int count;
-        while (true) {
-            System.out.println("Enter the number of tickets to add: ");
-            if (scanner.hasNextInt()) {
-                count = scanner.nextInt();
-                if (count > 0) {
-                    break;
-                } else {
-                    System.out.println("Please enter a positive number.");
-                }
-            } else {
-                System.out.println("Invalid input. Please enter a number.");
-                scanner.next();
-            }
-        }
-
-        Map<String, Object> requestBody = new HashMap<>();
-
-        requestBody.put("eventName", eventName);
-        requestBody.put("count", count);
-
-        //Create HTTP headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
-
+    public void run() {
         try {
+
+            Map<String, Object> requestBody = new HashMap<>();
+
+            requestBody.put("configId", eventId);
+            requestBody.put("count", count);
+
+            //Create HTTP headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
+
             // Send the POST request and get the response
             Map<String, Object> response = restTemplate.exchange(apiUrl, HttpMethod.POST, request, Map.class).getBody();
 
@@ -67,7 +59,28 @@ public class Vendor{
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Failed to connect to the backend. Ensure the API is running.", e);
         }
+    }
 
+    public void addTickets(){
+
+        try {
+            System.out.print("Enter number of vendors: ");
+            int numberOfVendors = scanner.nextInt();
+
+            for (int i = 0; i < numberOfVendors; i++) {
+                System.out.println("For Vendor " + (i + 1));
+                System.out.print("Enter the event id: ");
+                Long eventId = scanner.nextLong();
+                System.out.print("Enter the number of tickets to add: ");
+                int count = scanner.nextInt();
+                String apiUrl = "http://localhost:8090/api/vendor/add-tickets";
+                Vendor vendor = new Vendor(eventId, count, apiUrl);
+                Thread vendorThread = new Thread(vendor);
+                vendorThread.start();
+            }
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Failed to add tickets. Please try again.", e);
+        }
     }
 
 }
