@@ -113,7 +113,7 @@ public class CustomerService{
             }
         } catch (Exception e){
             log.error("Error in buying tickets : {}", e.getMessage());
-            buyTicketResponseDTO.setMessage("Error in buying tickets");
+            buyTicketResponseDTO.setMessage("Error in buying tickets : " + e.getMessage());
             buyTicketResponseDTO.setStatus(false);
         }
         return buyTicketResponseDTO;

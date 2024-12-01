@@ -62,15 +62,46 @@ public class Customer implements Runnable{
 
     public void buyTickets(){
         try {
-            System.out.print("Enter number of customers: ");
-            int numberOfCustomers = scanner.nextInt();
+
+            int numberOfCustomers;
+            while(true){
+                System.out.print("Enter number of customers: ");
+                if(scanner.hasNextInt()){
+                    numberOfCustomers = scanner.nextInt();
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter a number.");
+                    scanner.next();
+                }
+            }
 
             for (int i = 0; i < numberOfCustomers; i++) {
                 System.out.println("For Customer " + (i + 1));
-                System.out.print("Enter the event id: ");
-                Long eventId = scanner.nextLong();
-                System.out.print("Enter the number of tickets to buy: ");
-                int count = scanner.nextInt();
+
+                Long eventId;
+                while(true){
+                    System.out.print("Enter the event id: ");
+                    if(scanner.hasNextLong()){
+                        eventId = scanner.nextLong();
+                        break;
+                    } else {
+                        System.out.println("Invalid input. Please enter a number.");
+                        scanner.next();
+                    }
+                }
+
+                int count;
+                while(true){
+                    System.out.print("Enter the number of tickets to buy: ");
+                    if(scanner.hasNextInt()){
+                        count = scanner.nextInt();
+                        break;
+                    } else {
+                        System.out.println("Invalid input. Please enter a number.");
+                        scanner.next();
+                    }
+                }
+
                 String apiUrl = "http://localhost:8090/api/customer/buy-tickets";
                 Customer customer = new Customer(eventId, count, apiUrl);
                 Thread customerThread = new Thread(customer);

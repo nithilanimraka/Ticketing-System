@@ -64,15 +64,46 @@ public class Vendor implements Runnable{
     public void addTickets(){
 
         try {
-            System.out.print("Enter number of vendors: ");
-            int numberOfVendors = scanner.nextInt();
+
+            int numberOfVendors;
+            while(true){
+                System.out.print("Enter number of vendors: ");
+                if(scanner.hasNextInt()){
+                    numberOfVendors = scanner.nextInt();
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter a number.");
+                    scanner.next();
+                }
+            }
 
             for (int i = 0; i < numberOfVendors; i++) {
                 System.out.println("For Vendor " + (i + 1));
-                System.out.print("Enter the event id: ");
-                Long eventId = scanner.nextLong();
-                System.out.print("Enter the number of tickets to add: ");
-                int count = scanner.nextInt();
+
+                Long eventId;
+                while(true){
+                    System.out.print("Enter the event id: ");
+                    if(scanner.hasNextLong()){
+                        eventId = scanner.nextLong();
+                        break;
+                    } else {
+                        System.out.println("Invalid input. Please enter a number.");
+                        scanner.next();
+                    }
+                }
+
+                int count;
+                while(true){
+                    System.out.print("Enter the number of tickets to add: ");
+                    if(scanner.hasNextInt()){
+                        count = scanner.nextInt();
+                        break;
+                    } else {
+                        System.out.println("Invalid input. Please enter a number.");
+                        scanner.next();
+                    }
+                }
+
                 String apiUrl = "http://localhost:8090/api/vendor/add-tickets";
                 Vendor vendor = new Vendor(eventId, count, apiUrl);
                 Thread vendorThread = new Thread(vendor);

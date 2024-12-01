@@ -1,8 +1,6 @@
 package com.example.ticketingSystem.service;
 
 import com.example.ticketingSystem.dto.vendor.*;
-import com.example.ticketingSystem.entity.Configuration;
-import com.example.ticketingSystem.repository.ConfigurationRepository;
 import lombok.extern.slf4j.Slf4j;
 import com.example.ticketingSystem.repository.VendorRepository;
 import com.example.ticketingSystem.entity.Vendor;
@@ -21,12 +19,6 @@ public class VendorService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private ConfigurationRepository configurationRepository;
-
-//    @Autowired
-//    private TicketPoolService ticketPoolService;
 
     private final TicketManagementService ticketManagementService;
 
@@ -119,7 +111,7 @@ public class VendorService {
 
         } catch (Exception e){
             log.error("Ticket addition was not successful : {}", e.getMessage());
-            addTicketResponseDTO.setMessage("Error in adding tickets");
+            addTicketResponseDTO.setMessage("Error in adding tickets " + e.getMessage());
             addTicketResponseDTO.setStatus(false);
         }
         return addTicketResponseDTO;

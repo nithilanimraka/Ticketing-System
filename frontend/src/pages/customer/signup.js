@@ -70,54 +70,93 @@ function Signup() {
   }
 
   return (
-    <div className='d-flex justify-content-center align-items-center bg-primary vh-100'>
-      <div className='bg-white p-3 rounded w-2'>
-        <h2>Customer Sign Up</h2>
-        <form action='' onSubmit={handleSubmit}>
-          <div className='mb-3'>
-            <label htmlFor='name'><strong>Name</strong></label>
-            {errors.name && <span className='text-danger'> {errors.name} </span>}
-            <input type='text' placeholder='Enter Name' name='name'
-            onChange={handleInput} className='form-control rounded-0' />
-            
-            
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+      <div className="card shadow-lg p-4" style={{ width: '400px' }}>
+        <h3 className="text-center text-primary mb-4">Customer Sign Up</h3>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="name" className="form-label">
+              <strong>Name</strong>
+            </label>
+            {errors.name && <span className="text-danger"> {errors.name} </span>}
+            <input
+              type="text"
+              placeholder="Enter Name"
+              name="name"
+              onChange={handleInput}
+              className="form-control"
+            />
           </div>
 
-          <div className='mb-3'>
-            <label htmlFor='email'><strong>Email</strong></label>
-            {errors.email && <span className='text-danger'> {errors.email} </span>}
-            <input type='email' placeholder='Enter Email' name='email'
-            onChange={handleInput} className='form-control rounded-0' />
-            
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">
+              <strong>Email</strong>
+            </label>
+            {errors.email && <span className="text-danger"> {errors.email} </span>}
+            <input
+              type="email"
+              placeholder="Enter Email"
+              name="email"
+              onChange={handleInput}
+              className="form-control"
+            />
           </div>
 
-          <div className='mb-3'>
-            <label htmlFor='username'><strong>Username</strong></label>
-            {errors.username && <span className='text-danger'> {errors.username} </span>}
-            <input type='text' placeholder='Enter Username' name='username'
-            onChange={handleInput} className='form-control rounded-0' />
-            
-            
+          <div className="mb-3">
+            <label htmlFor="username" className="form-label">
+              <strong>Username</strong>
+            </label>
+            {errors.username && <span className="text-danger"> {errors.username} </span>}
+            <input
+              type="text"
+              placeholder="Enter Username"
+              name="username"
+              onChange={handleInput}
+              className="form-control"
+            />
           </div>
 
-          <div className='mb-3'>
-            <label htmlFor='password'><strong>Password</strong></label>
-            {errors.password && <span className='text-danger'> {errors.password} </span>}
-            <input type='password' placeholder='Enter Password' name='password'
-            onChange={handleInput} className='form-control rounded-0' />
-            
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
+              <strong>Password</strong>
+            </label>
+            {errors.password && <span className="text-danger"> {errors.password} </span>}
+            <input
+              type="password"
+              placeholder="Enter Password"
+              name="password"
+              onChange={handleInput}
+              className="form-control"
+            />
           </div>
 
-          <button type= 'submit' className='btn btn-success w-100 rounded-0'><strong>Create Account</strong></button>
-          <p>
-            Do you agree to our terms and conditions?
-            <input type='checkbox'></input>
-          </p>
-          <Link to='/login' className='btn btn-default border w-100 bg-light rounded-0 text-decoration-none'>Login</Link>
+          <div className="form-check mb-3">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              id="termsCheckbox"
+            />
+            <label className="form-check-label" htmlFor="termsCheckbox">
+              I agree to the terms and conditions
+            </label>
+          </div>
+
+          <button type="submit" className="btn btn-primary w-100 mb-3">
+            Create Account
+          </button>
+          <div className="d-flex justify-content-between align-items-center">
+            <span>Already have an account?</span>
+            <Link
+              to="/login"
+              className="btn btn-outline-secondary text-decoration-none ms-1"
+            >
+              Log In
+            </Link>
+          </div>
         </form>
       </div>
     </div>
   )
 }
 
-export default Signup
+export default Signup;

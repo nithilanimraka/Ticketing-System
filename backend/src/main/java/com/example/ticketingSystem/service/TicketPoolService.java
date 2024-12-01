@@ -45,7 +45,7 @@ public class TicketPoolService {
 
     public Boolean addTickets(int count, Long configId)throws InterruptedException,ExecutionException {
         Configuration configNew = configurationRepository.findById(configId)
-                .orElseThrow(() -> new RuntimeException("Event not found for event name: " + configId));
+                .orElseThrow(() -> new RuntimeException("Event not found for event Id: " + configId));
         Long id = configNew.getConfig_id();
         TicketPool ticketPool = ticketPoolRepository.findByConfiguration(configNew).orElseThrow();
         int maxTickets = configNew.getMax_tickets();
@@ -104,7 +104,7 @@ public class TicketPoolService {
     public Boolean removeTickets(int count, Long configId) throws InterruptedException, ExecutionException {
 
         Configuration configNew = configurationRepository.findById(configId)
-                .orElseThrow(() -> new RuntimeException("Event not found for event: " + configId));
+                .orElseThrow(() -> new RuntimeException("Event not found for event Id: " + configId));
         Long id = configNew.getConfig_id();
         TicketPool ticketPool = ticketPoolRepository.findByConfiguration(configNew).orElseThrow();
         int ticketCount = configNew.getCurrentTicketCount();
