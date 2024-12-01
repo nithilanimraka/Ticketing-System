@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useUser } from '../../components/UserContext';
 import axios from 'axios';
 
 function LoginVendor() {
@@ -7,6 +8,8 @@ function LoginVendor() {
         username:'',
         password:''
     })
+
+    const { login } = useUser();
 
     const [errors, setErrors] = useState({});
 
@@ -21,16 +24,24 @@ function LoginVendor() {
         const err = Validation(values);
         setErrors(err);
         if (Object.keys(err).length === 0) {
-            const customerData = { values };
-            console.log(customerData);
+            const vendorData = { values };
+            console.log(vendorData);
             try {
                 
-                const response = await axios.post('http://localhost:8090/api/customer/login', customerData.values);
+                const response = await axios.post('http://localhost:8090/api/vendor/login', vendorData.values, {
+                    username: values.username,
+                });
+                if(!response.data.status){
+                    alert("Invalid Username or Password");
+                    return;
+                }
                 console.log("no errors");
                 console.log(response);
-                navigate('/');
+                const userData = response.data; 
+                login(userData);
+                navigate('/home-vendor');
             } catch (error) {
-                console.error("Error registering customer:", error);
+                console.error("Error registering vendor:", error);
             }
         }
 

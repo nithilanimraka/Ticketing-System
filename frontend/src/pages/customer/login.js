@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useUser } from '../components/UserContext';
+import { useUser } from '../../components/UserContext';
 import axios from 'axios';
 
 function Login() {
@@ -28,10 +28,16 @@ function Login() {
             console.log(customerData);
             try {
                 
-                const response = await axios.post('http://localhost:8090/api/customer/login', customerData.values);
+                const response = await axios.post('http://localhost:8090/api/customer/login', customerData.values, {
+                    username: values.username,
+                });
+                if(!response.data.status){
+                    alert("Invalid Username or Password");
+                    return;
+                }
                 console.log("no errors");
                 console.log(response);
-                const userData = values.username; // Replace with actual user data
+                const userData = response.data; 
                 login(userData);
                 navigate('/');
             } catch (error) {

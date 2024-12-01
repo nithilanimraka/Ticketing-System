@@ -69,6 +69,7 @@ public class VendorService {
                     Optional<Vendor> vendor1 = vendorRepository.findOneByUsernameAndPassword(vendorLoginReqDTO.getUsername(), encodedPassword);
                     if(vendor1.isPresent()){
                         responseLogin.setMessage("Login successful");
+                        responseLogin.setUsername(vendorLoginReqDTO.getUsername());
                         responseLogin.setStatus(true);
                     }else {
                         responseLogin.setMessage("The credentials that have been entered are incorrect");
@@ -114,10 +115,8 @@ public class VendorService {
     public AddTicketResponseDTO addTickets(AddTicketReqDTO addTicketReqDTO){
         AddTicketResponseDTO addTicketResponseDTO = new AddTicketResponseDTO();
         int tickets_no = addTicketReqDTO.getCount();
-//        Long configId = 1L;
-//        TicketPoolService ticketPoolService = new TicketPoolService(50);
         try{
-            Boolean addTicketStatus = ticketManagementService.addTickets(addTicketReqDTO.getEventName(), tickets_no);
+            Boolean addTicketStatus = ticketManagementService.addTickets(addTicketReqDTO.getConfigId(), tickets_no);
 
             if(addTicketStatus){
                 log.info("{} tickets added successfully", tickets_no);

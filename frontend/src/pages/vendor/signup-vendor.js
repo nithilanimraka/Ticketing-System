@@ -33,7 +33,7 @@ function SignupVendor() {
         console.log("no errors");
         const response = await axios.post('http://localhost:8090/api/vendor/register', customerData.values);
         console.log(response);
-        navigate('/login');
+        navigate('/login-vendor');
 
       } catch (error) {
         console.error("Error registering customer:", error);

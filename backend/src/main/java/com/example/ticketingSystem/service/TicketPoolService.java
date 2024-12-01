@@ -43,9 +43,9 @@ public class TicketPoolService {
     private final ConcurrentHashMap<Long, Lock> removeLockMap = new ConcurrentHashMap<>();
 
 
-    public Boolean addTickets(int count, String eventName)throws InterruptedException,ExecutionException {
-        Configuration configNew = configurationRepository.findByEventName(eventName)
-                .orElseThrow(() -> new RuntimeException("Event not found for event name: " + eventName));
+    public Boolean addTickets(int count, Long configId)throws InterruptedException,ExecutionException {
+        Configuration configNew = configurationRepository.findById(configId)
+                .orElseThrow(() -> new RuntimeException("Event not found for event name: " + configId));
         Long id = configNew.getConfig_id();
         TicketPool ticketPool = ticketPoolRepository.findByConfiguration(configNew).orElseThrow();
         int maxTickets = configNew.getMax_tickets();

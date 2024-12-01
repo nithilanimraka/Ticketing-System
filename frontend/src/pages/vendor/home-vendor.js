@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import EventList from '../components/EventList';
+import EventListVendor from '../../components/EventListVendor';
+import { useUser } from '../../components/UserContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './HomePage.css'; 
+import '../HomePage.css'; 
 
-const HomePage = () => {
+const HomePageVendor = () => {
   const [events, setEvents] = useState([]);
+  const { user, logout } = useUser();
 
   useEffect(() => {
     // Fetch events from backend
@@ -13,6 +15,8 @@ const HomePage = () => {
       .then((res) => res.json())
       .then((data) => setEvents(data));
   }, []);
+
+  console.log('User:', user);
 
   return (
     <div className="container">
@@ -23,14 +27,23 @@ const HomePage = () => {
             <p className="lead">Find and purchase tickets for the best events around you</p>
           </div>
           <div className="d-flex flex-column">
-            <Link to='/login' className="btn btn-outline-light mb-2">Login as Customer</Link>
-            <Link to='/login-vendor' className="btn btn-outline-light">Login as Vendor</Link>
+          {user ? (
+              <>
+                <span className="text-light mb-2">Welcome, {user.username}</span>
+                <button onClick={logout} className="btn btn-outline-light">Logout</button>
+              </>
+            ) : (
+              <>
+                <Link to='/login' className="btn btn-outline-light mb-2">Login as Customer</Link>
+                <Link to='/login-vendor' className="btn btn-outline-light">Login as Vendor</Link>
+              </>
+            )}
           </div>
         </div>
       </div>
-      <EventList events={events} />
+      <EventListVendor events={events} />
     </div>
   );
 };
 
-export default HomePage;
+export default HomePageVendor;

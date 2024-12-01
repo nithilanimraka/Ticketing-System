@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ConfigurationRepository extends JpaRepository<Configuration, Long> {
-    Optional<Configuration> findByEventName(String eventName);
+
 }

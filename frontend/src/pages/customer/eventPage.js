@@ -7,11 +7,15 @@ const EventPage = () => {
   const [numTickets, setNumTickets] = useState(1);
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
+  const fetchEventDetails = () => {
     // Fetch event details from backend
     fetch(`http://localhost:8090/api/config/${config_id}`)
       .then((res) => res.json())
       .then((data) => setEvent(data));
+  };
+
+  useEffect(() => {
+    fetchEventDetails();
   }, [config_id]);
 
   const handleBuyTickets = () => {
@@ -29,6 +33,7 @@ const EventPage = () => {
       .then((res) => res.json())
       .then((data) => {
         setMessage(data.message);
+        fetchEventDetails();
       })
       .catch((error) => {
         setMessage('An error occurred while processing your request.');
@@ -53,7 +58,7 @@ const EventPage = () => {
           value={numTickets}
           onChange={(e) => setNumTickets(e.target.value)}
         >
-          {[...Array(event.no_of_tickets).keys()].map((num) => (
+          {[...Array(event.currentTicketCount).keys()].map((num) => (
             <option key={num + 1} value={num + 1}>
               {num + 1}
             </option>

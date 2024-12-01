@@ -61,6 +61,7 @@ public class CustomerService{
                     if(customer1.isPresent()){
                         log.info("Customer logged in successfully");
                         responseLogin.setMessage("Login successful");
+                        responseLogin.setUsername(customerLoginReqDTO.getUsername());
                         responseLogin.setStatus(true);
                     }else {
                         log.error("Customer login failed due to invalid credentials");
@@ -109,8 +110,6 @@ public class CustomerService{
     public BuyTicketResponseDTO buyTickets(BuyTicketReqDTO buyTicketReqDTO){
         BuyTicketResponseDTO buyTicketResponseDTO = new BuyTicketResponseDTO();
         int tickets_no = buyTicketReqDTO.getCount();
-//        Long configId= 1L;
-//        TicketPoolService ticketPoolService = new TicketPoolService(50);
         try{
             Boolean buyTicketStatus = ticketManagementService.removeTickets(buyTicketReqDTO.getConfigId(), tickets_no);
             if(buyTicketStatus){
