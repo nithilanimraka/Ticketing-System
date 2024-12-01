@@ -79,7 +79,7 @@ public class CustomerService{
                 responseLogin.setMessage("Username does not exist");
                 responseLogin.setStatus(false);
             }
-            
+
           return responseLogin;
         } catch (Exception e){
             log.error("Login was unsuccessful : " + e.getMessage(),e);

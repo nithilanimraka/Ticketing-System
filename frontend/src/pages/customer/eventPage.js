@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import '../EventPage.css'; 
 
 const EventPage = () => {
   const { config_id } = useParams();
@@ -33,7 +34,7 @@ const EventPage = () => {
       .then((res) => res.json())
       .then((data) => {
         setMessage(data.message);
-        fetchEventDetails();
+        fetchEventDetails(); // Fetch event details again after purchase
       })
       .catch((error) => {
         setMessage('An error occurred while processing your request.');
@@ -45,29 +46,29 @@ const EventPage = () => {
   }
 
   return (
-    <div className="container">
-      <h1>{event.eventName}</h1>
-      <p>Location: {event.location}</p>
-      <p>Tickets Available: {event.currentTicketCount}</p>
-      
-      <div className="form-group">
-        <label htmlFor="numTickets">Select number of tickets:</label>
-        <select
-          id="numTickets"
-          className="form-control"
-          value={numTickets}
-          onChange={(e) => setNumTickets(e.target.value)}
-        >
-          {[...Array(event.currentTicketCount).keys()].map((num) => (
-            <option key={num + 1} value={num + 1}>
-              {num + 1}
-            </option>
-          ))}
-        </select>
+    <div className="container mt-5">
+      <div className="card">
+        <div className="card-header bg-primary text-white">
+          <h1>{event.eventName}</h1>
+        </div>
+        <div className="card-body">
+          <p className="card-text"><strong>Location:</strong> {event.location}</p>
+          <p className="card-text"><strong>Tickets Available:</strong> {event.currentTicketCount}</p>
+          <div className="form-group">
+            <label htmlFor="numTickets">Select number of tickets:</label>
+            <input
+              type="number"
+              id="numTickets"
+              className="form-control"
+              value={numTickets}
+              onChange={(e) => setNumTickets(e.target.value)}
+              min="1"
+            />
+          </div>
+          <button className="btn btn-primary mt-3" onClick={handleBuyTickets}>Buy Ticket</button>
+          {message && <div className="alert alert-info mt-3">{message}</div>}
+        </div>
       </div>
-      
-      <button className="btn btn-primary mt-3" onClick={handleBuyTickets}> Buy Ticket</button>
-      {message && <div className="alert alert-info mt-3">{message}</div>}    
     </div>
   );
 };
