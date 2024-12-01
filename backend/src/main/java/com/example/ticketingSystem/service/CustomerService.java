@@ -79,17 +79,7 @@ public class CustomerService{
                 responseLogin.setMessage("Username does not exist");
                 responseLogin.setStatus(false);
             }
-
-//            String usernameStored = customer.getUsername();
-//            String passwordStored = customer.getPassword();
-//            if(usernameStored.equals(customerLoginReqDTO.getUsername())
-//                    && passwordStored.equals(customerLoginReqDTO.getPassword())){
-//                responseLogin.setMessage("Login successful");
-//                log.info("Customer logged in successfully");
-//            } else {
-//                responseLogin.setMessage("The credentials that have been entered are incorrect");
-//                log.info("Customer login failed due to invalid credentials");
-//            }
+            
           return responseLogin;
         } catch (Exception e){
             log.error("Login was unsuccessful : " + e.getMessage(),e);

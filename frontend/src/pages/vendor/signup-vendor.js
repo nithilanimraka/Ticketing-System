@@ -59,10 +59,6 @@ function SignupVendor() {
       error.email = 'Email is not valid'
     }
 
-    if (values.eventName === '') {
-        error.eventName = 'Event Name should not be empty'
-      }
-
     if (values.username === '') {
       error.username = 'Username should not be empty'
     }
@@ -91,13 +87,6 @@ function SignupVendor() {
             {errors.email && <span className='text-danger'> {errors.email} </span>}
             <input type='email' placeholder='Enter Email' name='email'
             onChange={handleInput} className='form-control rounded-0' />        
-          </div>
-
-          <div className='mb-3'>
-            <label htmlFor='eventName'><strong>Event Name</strong></label>
-            {errors.eventName && <span className='text-danger'> {errors.eventName} </span>}
-            <input type='text' placeholder='Enter Event Name' name='eventName'
-            onChange={handleInput} className='form-control rounded-0' />           
           </div>
 
           <div className='mb-3'>

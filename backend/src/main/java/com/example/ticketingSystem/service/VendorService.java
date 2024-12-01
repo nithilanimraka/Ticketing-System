@@ -85,17 +85,6 @@ public class VendorService {
                 responseLogin.setStatus(false);
             }
 
-//            Vendor vendor = vendorRepository.findByUsername(vendorLoginReqDTO.getUsername());
-//            String usernameStored = vendor.getUsername();
-//            String passwordStored = vendor.getPassword();
-//            if(usernameStored.equals(vendorLoginReqDTO.getUsername())
-//                    && passwordStored.equals(vendorLoginReqDTO.getPassword())){
-//                responseLogin.setMessage("Login successful");
-//                log.info("Vendor logged in successfully");
-//            } else {
-//                responseLogin.setMessage("The credentials that have entered are incorrect");
-//                log.info("Vendor login failed due to invalid credentials");
-//            }
             return responseLogin;
         } catch (Exception e){
             log.info("Login was unsuccessful : " + e.getMessage());
