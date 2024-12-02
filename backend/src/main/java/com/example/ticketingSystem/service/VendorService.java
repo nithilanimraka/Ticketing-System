@@ -105,7 +105,8 @@ public class VendorService {
                 addTicketResponseDTO.setStatus(true);
             } else {
                 log.error("Error in adding tickets");
-                addTicketResponseDTO.setMessage("Error in adding tickets");
+                addTicketResponseDTO.setMessage("Error in adding tickets. The number of tickets exceeds " +
+                        "the total number of tickets available or the maximum ticket count in ticket pool.");
                 addTicketResponseDTO.setStatus(false);
             }
 

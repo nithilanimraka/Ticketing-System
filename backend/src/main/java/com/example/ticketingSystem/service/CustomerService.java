@@ -108,7 +108,8 @@ public class CustomerService{
                 buyTicketResponseDTO.setStatus(true);
             } else {
                 log.error("Error in buying tickets");
-                buyTicketResponseDTO.setMessage("Error in buying tickets");
+                buyTicketResponseDTO.setMessage("Error in buying tickets. The number of tickets requested" +
+                        " exceeds the number of available tickets.");
                 buyTicketResponseDTO.setStatus(false);
             }
         } catch (Exception e){

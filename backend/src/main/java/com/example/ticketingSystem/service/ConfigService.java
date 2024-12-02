@@ -73,7 +73,7 @@ public class ConfigService {
     }
 
     public GetConfigDTO getConfigById(Long id) {
-        log.info("Get config by ID is running now + {}",id);
+        log.info("Get config by ID is running now: {}",id);
         Configuration configuration = configurationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Configuration not found with id: " + id));
         GetConfigDTO getConfigDTO = new GetConfigDTO();
