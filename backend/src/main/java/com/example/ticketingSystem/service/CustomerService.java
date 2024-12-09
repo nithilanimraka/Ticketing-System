@@ -27,6 +27,11 @@ public class CustomerService{
         this.ticketManagementService = ticketManagementService;
     }
 
+    /**
+     * Method to register a customer
+     * @param customerRegisterReqDTO
+     * @return
+     */
     public CustomerRegisterResponseDTO register(CustomerRegisterReqDTO customerRegisterReqDTO){
         Customer customer = new Customer();
         CustomerRegisterResponseDTO responseRegister = new CustomerRegisterResponseDTO();
@@ -48,6 +53,11 @@ public class CustomerService{
         }
     }
 
+    /**
+     * Method to login a registered customer
+     * @param customerLoginReqDTO
+     * @return
+     */
     public CustomerLoginResponseDTO login(CustomerLoginReqDTO customerLoginReqDTO){
         CustomerLoginResponseDTO responseLogin = new CustomerLoginResponseDTO();
         try{
@@ -90,6 +100,11 @@ public class CustomerService{
         }
     }
 
+    /**
+     * Method to delete a customer
+     * @param customerDeleteReqDTO
+     * @return
+     */
     public String deleteCustomer(CustomerDeleteReqDTO customerDeleteReqDTO){
         Customer customer = customerRepository.findById(customerDeleteReqDTO.getId()).orElseThrow(null);
         customerRepository.delete(customer);
@@ -97,6 +112,11 @@ public class CustomerService{
         return "Customer deleted";
     }
 
+    /**
+     * Method for buying tickets from a configuration by a customer
+     * @param buyTicketReqDTO
+     * @return
+     */
     public BuyTicketResponseDTO buyTickets(BuyTicketReqDTO buyTicketReqDTO){
         BuyTicketResponseDTO buyTicketResponseDTO = new BuyTicketResponseDTO();
         int tickets_no = buyTicketReqDTO.getCount();

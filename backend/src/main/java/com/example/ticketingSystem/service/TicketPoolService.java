@@ -43,9 +43,17 @@ public class TicketPoolService {
     private final ConcurrentHashMap<Long, Lock> removeLockMap = new ConcurrentHashMap<>();
 
 
+    /**
+     * Method to add tickets by the vendor
+     * @param count
+     * @param configId
+     * @return
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
     public Boolean addTickets(int count, Long configId)throws InterruptedException,ExecutionException {
         Configuration configNew = configurationRepository.findById(configId)
-                .orElseThrow(() -> new RuntimeException("Event not found for event Id: " + configId));
+                .orElseThrow(()  -> new RuntimeException("Event not found for event Id: " + configId));
         Long id = configNew.getConfig_id();
         TicketPool ticketPool = ticketPoolRepository.findByConfiguration(configNew).orElseThrow();
         int maxTickets = configNew.getMax_tickets();
@@ -101,6 +109,14 @@ public class TicketPoolService {
 
     }
 
+    /**
+     * Method to buy tickets by the customer
+     * @param count
+     * @param configId
+     * @return
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
     public Boolean removeTickets(int count, Long configId) throws InterruptedException, ExecutionException {
 
         Configuration configNew = configurationRepository.findById(configId)
@@ -151,6 +167,9 @@ public class TicketPoolService {
         return future.get();
     }
 
+    /**
+     * Method to cleanly terminate a ExecutorService when a Spring-managed bean is about to be destroyed.
+     */
     @PreDestroy
     public void shutdown() {
         log.info("Shutting down ExecutorService...");

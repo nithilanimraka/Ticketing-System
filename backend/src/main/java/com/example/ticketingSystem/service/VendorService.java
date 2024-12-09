@@ -27,6 +27,11 @@ public class VendorService {
         this.ticketManagementService = ticketManagementService;
     }
 
+    /**
+     * Method to register a vendor
+     * @param vendorRegisterReqDTO
+     * @return
+     */
     public VendorRegisterResponseDTO register(VendorRegisterReqDTO vendorRegisterReqDTO){
         Vendor vendor = new Vendor();
         VendorRegisterResponseDTO responseRegister = new VendorRegisterResponseDTO();
@@ -48,6 +53,11 @@ public class VendorService {
         }
     }
 
+    /**
+     * Method to login a registered vendor
+     * @param vendorLoginReqDTO
+     * @return
+     */
     public VendorLoginResponseDTO login(VendorLoginReqDTO vendorLoginReqDTO){
         VendorLoginResponseDTO responseLogin = new VendorLoginResponseDTO();
         try{
@@ -86,6 +96,11 @@ public class VendorService {
         }
     }
 
+    /**
+     * Method to delete a vendor
+     * @param vendorDeleteReqDTO
+     * @return
+     */
     public String deleteVendor(VendorDeleteReqDTO vendorDeleteReqDTO){
         Vendor vendor = vendorRepository.findById(vendorDeleteReqDTO.getId()).orElseThrow(null);
         vendorRepository.delete(vendor);
@@ -93,6 +108,11 @@ public class VendorService {
         return "Vendor was deleted successfully";
     }
 
+    /**
+     * Method for adding tickets to a configuration by a vendor
+     * @param addTicketReqDTO
+     * @return
+     */
     public AddTicketResponseDTO addTickets(AddTicketReqDTO addTicketReqDTO){
         AddTicketResponseDTO addTicketResponseDTO = new AddTicketResponseDTO();
         int tickets_no = addTicketReqDTO.getCount();

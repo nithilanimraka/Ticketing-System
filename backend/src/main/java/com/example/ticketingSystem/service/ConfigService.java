@@ -25,6 +25,11 @@ public class ConfigService {
     @Autowired
     private TicketPoolRepository ticketPoolRepository;
 
+    /**
+     * Method to add a configuration to a ticketing system
+     * @param addConfigReqDTO
+     * @return
+     */
     public AddConfigResponseDTO addConfigs(AddConfigReqDTO addConfigReqDTO) {
         Configuration configuration = new Configuration();
         AddConfigResponseDTO responseAddConfig = new AddConfigResponseDTO();
@@ -55,6 +60,10 @@ public class ConfigService {
         }
     }
 
+    /**
+     * Method to get all configurations that are available in the system
+     * @return List<GetConfigDTO>
+     */
     public List<GetConfigDTO> getAllConfigs() {
 
         List<Configuration> configurations = configurationRepository.findAll();
@@ -72,6 +81,11 @@ public class ConfigService {
 
     }
 
+    /**
+     * Method to get a configuration by its id
+     * @param id
+     * @return GetConfigDTO
+     */
     public GetConfigDTO getConfigById(Long id) {
         log.info("Get config by ID is running now: {}",id);
         Configuration configuration = configurationRepository.findById(id)
