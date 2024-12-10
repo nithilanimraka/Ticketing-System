@@ -20,6 +20,18 @@ public class CustomerService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private final TicketManagementService ticketManagementService;
+
+    @Autowired
+    public CustomerService(TicketManagementService ticketManagementService) {
+        this.ticketManagementService = ticketManagementService;
+    }
+
+    /**
+     * Method to register a customer
+     * @param customerRegisterReqDTO
+     * @return
+     */
     public CustomerRegisterResponseDTO register(CustomerRegisterReqDTO customerRegisterReqDTO){
         Customer customer = new Customer();
         CustomerRegisterResponseDTO responseRegister = new CustomerRegisterResponseDTO();
@@ -41,6 +53,11 @@ public class CustomerService{
         }
     }
 
+    /**
+     * Method to login a registered customer
+     * @param customerLoginReqDTO
+     * @return
+     */
     public CustomerLoginResponseDTO login(CustomerLoginReqDTO customerLoginReqDTO){
         CustomerLoginResponseDTO responseLogin = new CustomerLoginResponseDTO();
         try{
@@ -54,6 +71,7 @@ public class CustomerService{
                     if(customer1.isPresent()){
                         log.info("Customer logged in successfully");
                         responseLogin.setMessage("Login successful");
+                        responseLogin.setUsername(customerLoginReqDTO.getUsername());
                         responseLogin.setStatus(true);
                     }else {
                         log.error("Customer login failed due to invalid credentials");
@@ -72,16 +90,6 @@ public class CustomerService{
                 responseLogin.setStatus(false);
             }
 
-//            String usernameStored = customer.getUsername();
-//            String passwordStored = customer.getPassword();
-//            if(usernameStored.equals(customerLoginReqDTO.getUsername())
-//                    && passwordStored.equals(customerLoginReqDTO.getPassword())){
-//                responseLogin.setMessage("Login successful");
-//                log.info("Customer logged in successfully");
-//            } else {
-//                responseLogin.setMessage("The credentials that have been entered are incorrect");
-//                log.info("Customer login failed due to invalid credentials");
-//            }
           return responseLogin;
         } catch (Exception e){
             log.error("Login was unsuccessful : " + e.getMessage(),e);
@@ -92,6 +100,11 @@ public class CustomerService{
         }
     }
 
+    /**
+     * Method to delete a customer
+     * @param customerDeleteReqDTO
+     * @return
+     */
     public String deleteCustomer(CustomerDeleteReqDTO customerDeleteReqDTO){
         Customer customer = customerRepository.findById(customerDeleteReqDTO.getId()).orElseThrow(null);
         customerRepository.delete(customer);
@@ -99,24 +112,29 @@ public class CustomerService{
         return "Customer deleted";
     }
 
+    /**
+     * Method for buying tickets from a configuration by a customer
+     * @param buyTicketReqDTO
+     * @return
+     */
     public BuyTicketResponseDTO buyTickets(BuyTicketReqDTO buyTicketReqDTO){
         BuyTicketResponseDTO buyTicketResponseDTO = new BuyTicketResponseDTO();
-        int tickets_no = buyTicketReqDTO.getRequested_tickets_buy();
-        TicketPool ticketPool = new TicketPool(50);
+        int tickets_no = buyTicketReqDTO.getCount();
         try{
-            Boolean buyTicketStatus = ticketPool.removeTickets(tickets_no);
+            Boolean buyTicketStatus = ticketManagementService.removeTickets(buyTicketReqDTO.getConfigId(), tickets_no);
             if(buyTicketStatus){
-                log.info("Tickets bought successfully");
+                log.info("{} Tickets bought successfully", tickets_no);
                 buyTicketResponseDTO.setMessage(tickets_no + " tickets bought successfully");
                 buyTicketResponseDTO.setStatus(true);
             } else {
                 log.error("Error in buying tickets");
-                buyTicketResponseDTO.setMessage("Error in buying tickets");
+                buyTicketResponseDTO.setMessage("Error in buying tickets. The number of tickets requested" +
+                        " exceeds the number of available tickets.");
                 buyTicketResponseDTO.setStatus(false);
             }
         } catch (Exception e){
             log.error("Error in buying tickets : {}", e.getMessage());
-            buyTicketResponseDTO.setMessage("Error in buying tickets");
+            buyTicketResponseDTO.setMessage("Error in buying tickets : " + e.getMessage());
             buyTicketResponseDTO.setStatus(false);
         }
         return buyTicketResponseDTO;

@@ -23,7 +23,10 @@ public class Configuration {
     private int ticket_release_rate;
     private int customer_retrieval_rate;
     private int max_tickets;
+    //new entry to store tickets in the event
+    private int currentTicketCount;
 
-    @OneToMany(mappedBy = "configuration", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Vendor> vendors;
+    @OneToOne(mappedBy = "configuration", cascade = CascadeType.ALL, orphanRemoval = true)
+    private TicketPool ticketPool;
+
 }

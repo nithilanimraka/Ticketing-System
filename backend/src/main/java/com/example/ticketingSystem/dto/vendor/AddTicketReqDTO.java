@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddTicketReqDTO {
-    private int request_tickets_add;
+    private int count;
+    private Long configId;
 }
 

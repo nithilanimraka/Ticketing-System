@@ -1,9 +1,6 @@
 package com.example.ticketingSystem.service;
 
 import com.example.ticketingSystem.dto.vendor.*;
-import com.example.ticketingSystem.entity.Configuration;
-import com.example.ticketingSystem.entity.Customer;
-import com.example.ticketingSystem.repository.ConfigurationRepository;
 import lombok.extern.slf4j.Slf4j;
 import com.example.ticketingSystem.repository.VendorRepository;
 import com.example.ticketingSystem.entity.Vendor;
@@ -23,22 +20,27 @@ public class VendorService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private ConfigurationRepository configurationRepository;
+    private final TicketManagementService ticketManagementService;
 
+    @Autowired
+    public VendorService(TicketManagementService ticketManagementService) {
+        this.ticketManagementService = ticketManagementService;
+    }
+
+    /**
+     * Method to register a vendor
+     * @param vendorRegisterReqDTO
+     * @return
+     */
     public VendorRegisterResponseDTO register(VendorRegisterReqDTO vendorRegisterReqDTO){
         Vendor vendor = new Vendor();
         VendorRegisterResponseDTO responseRegister = new VendorRegisterResponseDTO();
         try{
-            // Fetch the configuration from the database
-            Configuration configuration = configurationRepository.findByEventName(vendorRegisterReqDTO.getEventName())
-                    .orElseThrow(() -> new RuntimeException("Configuration not found"));
             vendor.setName(vendorRegisterReqDTO.getName());
             vendor.setEmail(vendorRegisterReqDTO.getEmail());
             vendor.setUsername(vendorRegisterReqDTO.getUsername());
             vendor.setPassword(this.passwordEncoder.encode(vendorRegisterReqDTO.getPassword()));
             vendor.setTickets_added(0);
-            vendor.setConfiguration(configuration);
 
             vendorRepository.save(vendor);
             log.info("Vendor saved in database");
@@ -51,6 +53,11 @@ public class VendorService {
         }
     }
 
+    /**
+     * Method to login a registered vendor
+     * @param vendorLoginReqDTO
+     * @return
+     */
     public VendorLoginResponseDTO login(VendorLoginReqDTO vendorLoginReqDTO){
         VendorLoginResponseDTO responseLogin = new VendorLoginResponseDTO();
         try{
@@ -64,6 +71,7 @@ public class VendorService {
                     Optional<Vendor> vendor1 = vendorRepository.findOneByUsernameAndPassword(vendorLoginReqDTO.getUsername(), encodedPassword);
                     if(vendor1.isPresent()){
                         responseLogin.setMessage("Login successful");
+                        responseLogin.setUsername(vendorLoginReqDTO.getUsername());
                         responseLogin.setStatus(true);
                     }else {
                         responseLogin.setMessage("The credentials that have been entered are incorrect");
@@ -79,17 +87,6 @@ public class VendorService {
                 responseLogin.setStatus(false);
             }
 
-//            Vendor vendor = vendorRepository.findByUsername(vendorLoginReqDTO.getUsername());
-//            String usernameStored = vendor.getUsername();
-//            String passwordStored = vendor.getPassword();
-//            if(usernameStored.equals(vendorLoginReqDTO.getUsername())
-//                    && passwordStored.equals(vendorLoginReqDTO.getPassword())){
-//                responseLogin.setMessage("Login successful");
-//                log.info("Vendor logged in successfully");
-//            } else {
-//                responseLogin.setMessage("The credentials that have entered are incorrect");
-//                log.info("Vendor login failed due to invalid credentials");
-//            }
             return responseLogin;
         } catch (Exception e){
             log.info("Login was unsuccessful : " + e.getMessage());
@@ -99,6 +96,11 @@ public class VendorService {
         }
     }
 
+    /**
+     * Method to delete a vendor
+     * @param vendorDeleteReqDTO
+     * @return
+     */
     public String deleteVendor(VendorDeleteReqDTO vendorDeleteReqDTO){
         Vendor vendor = vendorRepository.findById(vendorDeleteReqDTO.getId()).orElseThrow(null);
         vendorRepository.delete(vendor);
@@ -106,12 +108,16 @@ public class VendorService {
         return "Vendor was deleted successfully";
     }
 
+    /**
+     * Method for adding tickets to a configuration by a vendor
+     * @param addTicketReqDTO
+     * @return
+     */
     public AddTicketResponseDTO addTickets(AddTicketReqDTO addTicketReqDTO){
         AddTicketResponseDTO addTicketResponseDTO = new AddTicketResponseDTO();
-        int tickets_no = addTicketReqDTO.getRequest_tickets_add();
-        TicketPool ticketPool = new TicketPool(50);
+        int tickets_no = addTicketReqDTO.getCount();
         try{
-            Boolean addTicketStatus = ticketPool.addTickets(tickets_no);
+            Boolean addTicketStatus = ticketManagementService.addTickets(addTicketReqDTO.getConfigId(), tickets_no);
 
             if(addTicketStatus){
                 log.info("{} tickets added successfully", tickets_no);
@@ -119,13 +125,14 @@ public class VendorService {
                 addTicketResponseDTO.setStatus(true);
             } else {
                 log.error("Error in adding tickets");
-                addTicketResponseDTO.setMessage("Error in adding tickets");
+                addTicketResponseDTO.setMessage("Error in adding tickets. The number of tickets exceeds " +
+                        "the total number of tickets available or the maximum ticket count in ticket pool.");
                 addTicketResponseDTO.setStatus(false);
             }
 
         } catch (Exception e){
             log.error("Ticket addition was not successful : {}", e.getMessage());
-            addTicketResponseDTO.setMessage("Error in adding tickets");
+            addTicketResponseDTO.setMessage("Error in adding tickets " + e.getMessage());
             addTicketResponseDTO.setStatus(false);
         }
         return addTicketResponseDTO;

@@ -21,8 +21,4 @@ public class Vendor {
 
     private String password;
     private int tickets_added;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "config_id", nullable = false)
-    private Configuration configuration;
 }
